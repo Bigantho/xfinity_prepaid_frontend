@@ -55,7 +55,7 @@
                     <v-data-table :headers="headersRoutes" :items="routes" height="250" item-value="name"
                         hide-default-footer>
                         <template v-slot:item.statusShipment="{ item }">
-                            <v-chip variant="outlined"  color="#447845">
+                            <v-chip variant="tonal"  color="#447845" rounded>
                              {{ item.statusShipment }}
                             </v-chip>
                         </template>
