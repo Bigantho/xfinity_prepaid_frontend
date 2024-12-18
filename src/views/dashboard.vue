@@ -3,7 +3,7 @@
         <!-- <v-card class=""> -->
         <v-row class="ma-1">
             <v-col cols="4">
-                <v-btn variant="text" color="" base-color="red" @click="$router.push({ name: 'customer' })">
+                <v-btn variant="text" color="" base-color="red" @click="$router.push({ name: 'customerTotal' })">
                     <v-icon color="#4D87E2" class="me-1">mdi mdi-account-multiple</v-icon> Customer
                 </v-btn>
             </v-col>

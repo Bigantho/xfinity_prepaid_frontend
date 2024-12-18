@@ -2,6 +2,7 @@ import './assets/main.css'
 import '@mdi/font/css/materialdesignicons.css'
 
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
@@ -19,6 +20,7 @@ const vuetify = createVuetify({
 
 import router from './router'
 
+const pinia = createPinia()
 const app = createApp(App)
 
 import globalProperties from './utils/globalProperties'
@@ -28,7 +30,7 @@ router.appInstance = app;
 app.config.globalProperties.$globalMethods = globalProperties
 
 
-app.use(router).use(vuetify).mount('#app')
+app.use(pinia).use(router).use(vuetify).mount('#app')
 
 
 export default app;
