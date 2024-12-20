@@ -1,10 +1,5 @@
-<script setup>
-// import HelloWorld from './components/HelloWorld.vue'
-// import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <header>
+  <header v-if="!$route.meta.hideHeader">
     <v-layout>
       <v-app-bar color="#5426D6" prominent>
         <!-- <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon> -->
@@ -50,7 +45,7 @@
         </v-list>
       </v-navigation-drawer>
     </v-layout>
-    
+
   </header>
 
   <main>
@@ -88,3 +83,22 @@ header {
   }
 }
 </style>
+
+<script lang="js">
+import { useRouter } from 'vue-router';
+export default {
+  setup() {
+    const router = useRouter();
+
+    const logOut = () => {
+      router.push({ name: 'login' })
+    }
+
+
+    return {
+
+      logOut
+    }
+  }
+}
+</script>

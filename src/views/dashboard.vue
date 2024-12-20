@@ -8,7 +8,7 @@
                 </v-btn>
             </v-col>
             <v-col cols="4">
-                <v-btn variant="text" color="" base-color="red" @click="$router.push({ name: 'router' })">
+                <v-btn variant="text" color="" base-color="red" @click="$router.push({ name: 'routerTotal' })">
                     <v-icon color="#4D87E2" class="me-1">mdi mdi-router-wireless</v-icon> Routers
                 </v-btn>
             </v-col>

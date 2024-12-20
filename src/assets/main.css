@@ -25,9 +25,11 @@ a,
   body {
     /* display: flex; */
     /* place-items: center; */
+    /* background: linear-gradient(to bottom, #5426D6, #4D87E2 ) ; */
   }
 
   #app {
+    background-color: white;
     /* display: grid; */
     grid-template-columns: 1fr 1fr;
     /* padding: 0 2rem; */

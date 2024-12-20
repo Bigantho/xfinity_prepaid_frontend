@@ -14,14 +14,13 @@
     </v-row>
     <v-row>
         <v-col cols="4">
-            <!-- <v-text-field label="BirthDay" variant="outlined"></v-text-field> -->
             <v-menu v-model="menu" :close-on-content-click="false" location="end">
                 <template v-slot:activator="{ props }">
                     <v-text-field label="Birthday" v-bind="props" v-model="formattedRange"
                         variant="outlined"></v-text-field>
                 </template>
                 <v-card min-width="300">
-                    <v-date-picker  v-model="dateRangeSelected"></v-date-picker>
+                    <v-date-picker v-model="dateSelected"></v-date-picker>
                 </v-card>
             </v-menu>
         </v-col>
@@ -65,7 +64,8 @@
 
     <v-row class="center">
         <v-col cols="12" class="text-center">
-            <v-btn color="primary" append-icon="mdi-arrow-right-thin">
+            <v-btn color="primary" append-icon="mdi-arrow-right-thin"
+                @click="$router.push({ name: 'customerAddCreditCard' })">
                 NEXT
             </v-btn>
         </v-col>
@@ -80,10 +80,9 @@
 }
 </style>
 <script lang="js">
-import { ref , computed} from 'vue'
+import { ref, computed } from 'vue'
 export default {
     setup() {
-        const menu = ref(false)
 
         const states = ref([
             "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
@@ -99,36 +98,29 @@ export default {
 
         const countrySelected = "USA"
 
-        const dateRangeSelected = ref(null)
-        const formattedStartDate = ref(null)
-        const formattedEndDate = ref(null)
-
+        const menu = ref(false)
+        const dateSelected = ref(null)
         // Computed property to format the date range for display
         const formattedRange = computed(() => {
-            const startDate = dateRangeSelected.value;
-            console.log(startDate);
-            
-            formattedStartDate.value = `${startDate.getFullYear()}-${String(startDate.getMonth() + 1).padStart(2, '0')}-${String(startDate.getDate()).padStart(2, '0')}`
-            return formattedStartDate
+            let date = dateSelected.value;
 
-
-            const endDate = dateRangeSelected.value.at(-1)
-
-            if (startDate && dateRangeSelected.value.length > 1) {
-
-                formattedEndDate.value = `${endDate.getFullYear()}-${String(endDate.getMonth() + 1).padStart(2, '0')}-${String(endDate.getDate()).padStart(2, '0')}`
+            if (date != null) {
+                date = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
                 menu.value = false
-                return `${formattedStartDate.value} ~ ${formattedEndDate.value}`;
+                return date
             }
+
             return '';
         });
 
         return {
             states,
             countrySelected,
+
             menu,
-            formattedRange,
-            dateRangeSelected
+            dateSelected,
+            formattedRange
+
         }
     }
 }

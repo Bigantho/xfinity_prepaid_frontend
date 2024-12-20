@@ -2,15 +2,20 @@ import { createMemoryHistory, createRouter, createWebHistory } from 'vue-router'
 
 import login from '@/views/login.vue'
 import dashboard from '@/views/dashboard.vue'
-import customerTotal from '@/views/customer/customerTotal.vue'
 import orders from '@/views/orders.vue'
-import routers from '@/views/routers.vue'
+
 import customer from '@/views/customer/customer.vue'
+import customerTotal from '@/views/customer/customerTotal.vue'
 import customerAdd from '@/views/customer/customerAdd.vue'
+import customerAddCreditCard from '@/views/customer/customerAddCreditCard.vue'
+
+import router from '@/views/router/router.vue'
+import routerTotal from '@/views/router/routerTotal.vue'
+import routerAdd from '@/views/router/routerAdd.vue'
 // import { authGuard } from './guards'
 
 const routes = [
-  { path: '/ts', component: login, name: 'login' },
+  { path: '/', component: login, name: 'login', meta: { hideHeader: true } },
   { path: '/dashboard', component: dashboard, name: 'dashboard' },
   {
     path: '/customer', component: customer, children: [
@@ -23,16 +28,34 @@ const routes = [
         path: 'new',
         component: customerAdd,
         name: 'customerAdd'
+      },
+      {
+        path: 'add/credit_card',
+        component: customerAddCreditCard,
+        name: 'customerAddCreditCard'
       }
     ]
   },
   { path: '/order', component: orders, name: 'order' },
-  { path: '/router', component: routers, name: 'router' }
+  {
+    path: '/router', component: router, children: [
+      {
+        path: 'total',
+        component: routerTotal,
+        name: 'routerTotal'
+      },
+      {
+        path: 'new',
+        component: routerAdd,
+        name: 'routerAdd'
+      }
+    ]
+  }
 
 ]
 
 
-const router = createRouter({
+const routerRouting = createRouter({
   // history: createMemoryHistory(),
   history: createWebHistory(),
   routes,
@@ -42,4 +65,4 @@ const router = createRouter({
 //   await authGuard(router.appInstance, to, from, next)
 // })
 
-export default router
+export default routerRouting
