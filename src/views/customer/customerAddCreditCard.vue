@@ -8,7 +8,6 @@
                 </v-col>
                 <v-col class="text-center">
                     <h2>Credit Card</h2>
-                    {{ servicesSelected }}
                 </v-col>
             </v-row>
             <br>
@@ -37,29 +36,57 @@
                 </v-col>
             </v-row>
             <br>
-            <v-row>
+            <!-- <v-row>
                 <v-col class="text-center">
                     <v-btn prepend-icon="mdi mdi-content-save" base-color="#4D87E2" size="large">
                         Save
                     </v-btn>
                 </v-col>
-            </v-row>
+            </v-row> -->
 
             <br>
             <h2>Choose Service</h2>
             <v-row>
-                <v-col cols="3">
-                    <v-select v-model="servicesSelected" :items="formattedServices" item-title="title" item-value="id"
-                        >
+                <v-col cols="4">
+                    <v-select v-model="servicesSelected" :items="formattedServices" item-title="title" item-value="id">
                         <!-- <template #item="{ item }">
                             america
                             {{ item.name }} - {{ item.price }}
                         </template> -->
                     </v-select>
                 </v-col>
+                <v-col cols="3">
+                    <v-checkbox label="Activation Fee"></v-checkbox>
+                </v-col>
+                <v-col cols="3">
+                    <v-checkbox label="Equipment Charge"></v-checkbox>
+                </v-col>
+                <v-col cols="2">
+                    <v-checkbox label="Installation"></v-checkbox>
+                </v-col>
+            </v-row>
+
+            <v-row>
                 <v-col cols="3"></v-col>
+                <v-col><v-row>
+                        <v-col class="text-start"> <strong>Service</strong> <br> Shipment <br> Activation Fee</v-col>
+                        <v-col class="text-end"> <strong>Total</strong> <br> $100.00 <br> $20.00 </v-col>
+                        <v-divider color="#000000"></v-divider>
+                    </v-row>
+                    <v-row>
+                        <v-col class="text-start"> <strong>Total</strong></v-col>
+                        <v-col class="text-end"> $120.00</v-col>
+                    </v-row>
+                </v-col>
                 <v-col cols="3"></v-col>
-                <v-col cols="3"></v-col>
+            </v-row>
+            <v-row>
+                <v-col class="text-center">
+                    <v-btn append-icon="mdi mdi-arrow-right-thin" base-color="#4D87E2" size="large"
+                        @click="$router.push({ name: 'customerAddVirtualPhone' })">
+                        Next
+                    </v-btn>
+                </v-col>
             </v-row>
         </v-card>
     </v-container>
@@ -102,7 +129,7 @@ export default {
 
         return {
             services,
-            servicesSelected, 
+            servicesSelected,
             formattedServices
         }
     }

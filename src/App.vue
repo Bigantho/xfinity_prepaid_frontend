@@ -39,9 +39,56 @@
         <v-divider></v-divider>
 
         <v-list density="compact" nav>
-          <v-list-item prepend-icon="mdi mdi-account-multiple" title="Customers" value="myfiles"></v-list-item>
-          <v-list-item prepend-icon="mdi mdi-router-wireless" title="Routers" value="shared"></v-list-item>
-          <v-list-item prepend-icon="mdi mdi-file-document-check-outline" title="Orders" value="starred"></v-list-item>
+          <v-list-group value="customers">
+
+
+            <template v-slot:activator="{ props }">
+              <v-list-item v-bind="props" prepend-icon="mdi mdi-account-multiple" title="Customers"
+                value="myfiles"></v-list-item>
+
+            </template>
+            <v-list-item prepend-icon="mdi mdi-plus" title="Add Customer" value="1"
+              @click="$router.push({ name: 'customerAdd' })">
+
+            </v-list-item>
+
+            <v-list-item prepend-icon="mdi mdi-plus" title="Payment History" value="2"
+              @click="$router.push({ name: 'customerPaymentHistory' })">
+
+            </v-list-item>
+
+
+            <v-list-item prepend-icon="mdi mdi-plus" title="Edit Customer" value="3"
+              @click="$router.push({ name: 'customerEdit' })">
+
+            </v-list-item>
+
+          </v-list-group>
+
+          <v-list-group value="routers">
+            <template v-slot:activator="{ props }">
+              <v-list-item v-bind="props" prepend-icon="mdi mdi-router-wireless" title="Routers"
+                value="shared"></v-list-item>
+            </template>
+            <v-list-item prepend-icon="mdi mdi-plus" title="Add Router" value="4"
+              @click="$router.push({ name: 'routerAdd' })">
+            </v-list-item>
+            <v-list-item prepend-icon="mdi mdi-format-list-bulleted" title="Routers" value="5"
+              @click="$router.push({ name: 'routerTotal' })">
+            </v-list-item>
+          </v-list-group>
+
+          <v-list-group value="orders">
+            <template v-slot:activator="{ props }">
+              <v-list-item v-bind="props" prepend-icon="mdi mdi-file-document-check-outline" title="Orders"
+                value="starred"></v-list-item>
+            </template>
+            <v-list-item prepend-icon="mdi mdi-plus" title="Add Order" value="6" 
+            @click="$router.push({ name: 'orderTotal' })"
+
+            ></v-list-item>
+
+          </v-list-group>
         </v-list>
       </v-navigation-drawer>
     </v-layout>

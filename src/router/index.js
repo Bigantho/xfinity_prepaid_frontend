@@ -2,12 +2,17 @@ import { createMemoryHistory, createRouter, createWebHistory } from 'vue-router'
 
 import login from '@/views/login.vue'
 import dashboard from '@/views/dashboard.vue'
-import orders from '@/views/orders.vue'
+
+import order from '@/views/order/order.vue'
+import orderTotal from '@/views/order/orderTotal.vue'
 
 import customer from '@/views/customer/customer.vue'
 import customerTotal from '@/views/customer/customerTotal.vue'
 import customerAdd from '@/views/customer/customerAdd.vue'
 import customerAddCreditCard from '@/views/customer/customerAddCreditCard.vue'
+import customerAddVirtualPhone from '@/views/customer/customerAddVirtualPhone.vue'
+import customerPaymentHistory from '@/views/customer/customerPaymentHistory.vue'
+import customerEdit from '@/views/customer/customerEdit.vue'
 
 import router from '@/views/router/router.vue'
 import routerTotal from '@/views/router/routerTotal.vue'
@@ -30,13 +35,36 @@ const routes = [
         name: 'customerAdd'
       },
       {
+        path: 'edit',
+        component: customerEdit,
+        name: 'customerEdit'
+      },
+      {
         path: 'add/credit_card',
         component: customerAddCreditCard,
         name: 'customerAddCreditCard'
+      },
+      {
+        path: 'add/virtual_phone',
+        component: customerAddVirtualPhone,
+        name: 'customerAddVirtualPhone'
+      },
+      {
+        path: 'payments',
+        component: customerPaymentHistory,
+        name: 'customerPaymentHistory'
       }
     ]
   },
-  { path: '/order', component: orders, name: 'order' },
+  {
+    path: '/order', component: order, children: [
+      {
+        path: 'total',
+        component: orderTotal,
+        name: 'orderTotal'
+      }
+    ]
+  },
   {
     path: '/router', component: router, children: [
       {
