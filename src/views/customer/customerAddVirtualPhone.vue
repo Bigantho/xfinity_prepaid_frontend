@@ -19,6 +19,9 @@
             <v-btn append-icon="mdi mdi-content-save" color="#4D87E2">
                 Finish Process
             </v-btn>
+            <v-btn class="x-btn">
+test ntn
+            </v-btn>
             <!-- <v-btn>
                 Test
                 <template #append>
@@ -29,7 +32,11 @@
     </v-container>
 </template>
 
-<style scoped></style>
+<style scoped>
+
+.x-btn{
+    background-color: #51ecec30;
+}</style>
 
 <script lang="js">
 import { ref } from 'vue'

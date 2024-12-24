@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <!-- <v-card class=""> -->
-        <v-row class="ma-1">
+        <v-row class="text-center">
             <v-col cols="4">
                 <v-btn variant="text" color="" base-color="red" @click="$router.push({ name: 'customerTotal' })">
                     <v-icon color="#4D87E2" class="me-1">mdi mdi-account-multiple</v-icon> Customer
@@ -22,24 +22,26 @@
         <br>
         <v-row>
             <v-col cols="6">
-                <h3 class="xp-title-table">Customers</h3>
+                <h3 class="xp-title-table">Payments</h3>
+                <br>
                 <v-card>
-                    <v-data-table :headers="headersCustomers" :items="customers" height="250" item-value="name"
+                    <v-data-table :headers="headersPayments" :items="payments" height="200" item-value="name"
                         hide-default-footer></v-data-table>
                 </v-card>
             </v-col>
             <v-col cols="6">
                 <h3 class="xp-title-table">Orders</h3>
+           <br>
                 <v-card>
-                    <v-row class="ma-6">
+                    <v-row class="ma-6" no-gutters>
                         <v-col cols="6">
-                            <v-card style="background-color: #4D87E224;" height="200px">
+                            <v-card style="background-color: #4D87E224;" height="150px" class="mr-3">
                                 <v-card-title class="xp-card-title">2</v-card-title>
                                 <v-card-text class="xp-card-text">Shipped Routers</v-card-text>
                             </v-card>
                         </v-col>
                         <v-col cols="6">
-                            <v-card style="background-color: #51ECEC24;" height="200px">
+                            <v-card style="background-color: #51ECEC24;" height="150px" class="ml-3">
                                 <v-card-title class="xp-card-title">1</v-card-title>
                                 <v-card-text class="xp-card-text">Active Customer</v-card-text>
                             </v-card>
@@ -51,6 +53,7 @@
         <v-row>
             <v-col cols="12">
                 <h3 class="xp-title-table">Routers</h3>
+                <br>
                 <v-card>
                     <v-data-table :headers="headersRoutes" :items="routes" height="250" item-value="name"
                         hide-default-footer>
@@ -74,7 +77,7 @@
 
 .xp-card-title {
     text-align: center;
-    font-size: 5em;
+    font-size: 3.5em;
     color: #5426D6;
 }
 
@@ -92,7 +95,7 @@ import { ref } from 'vue'
 export default {
     setup() {
         const n = ref('Anthony Vasquez')
-        const headersCustomers = ref([
+        const headersPayments = ref([
             { title: 'Account', align: 'center', key: 'account' },
             { title: 'Full Name', align: 'center', key: 'name' },
             { title: 'Billing', align: 'center', key: 'billing' }
@@ -109,7 +112,7 @@ export default {
 
 
         ])
-        const customers = ref([
+        const payments = ref([
             {
                 account: 'AV898989',
                 name: "Anthony Vasquez",
@@ -192,8 +195,8 @@ export default {
         ])
 
         return {
-            headersCustomers,
-            customers,
+            headersPayments,
+            payments,
             headersRoutes,
             routes
         }

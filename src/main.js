@@ -11,6 +11,7 @@ import * as directives from 'vuetify/directives'
 
 
 import App from './App.vue'
+import axiosInstance from './plugins/axios';
 
 const vuetify = createVuetify({
     components,
@@ -28,6 +29,7 @@ import globalProperties from './utils/globalProperties'
 router.appInstance = app;
 
 app.config.globalProperties.$globalMethods = globalProperties
+app.provide('$axios', axiosInstance);
 
 
 app.use(pinia).use(router).use(vuetify).mount('#app')

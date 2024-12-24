@@ -1,11 +1,21 @@
 <template>
     <v-container>
-        <h1 class="text-center">Customer</h1>
+        <v-row class="text-center" no-gutters>
+            <v-col>
+                <h1 class="text-center">Customer</h1>
+            </v-col>
+        </v-row>
+        <v-row no-gutters>
+            <v-col>
+                <v-icon icon="mdi-arrow-top-left-bold-box-outline" @click="$router.go(-1)">
+                </v-icon>
+            </v-col>
+
+        </v-row>
+        <br>
         <v-card class="pa-8">
             <v-row>
-                <v-col cols="1"><v-icon icon="mdi-arrow-top-left-bold-box-outline" @click="$router.go(-1)">
-                    </v-icon>
-                </v-col>
+
                 <v-col class="text-center">
                     <h2>Credit Card</h2>
                 </v-col>
