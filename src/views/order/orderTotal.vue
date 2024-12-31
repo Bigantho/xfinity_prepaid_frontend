@@ -31,17 +31,22 @@
         <br>
         <v-card>
             <v-data-table :headers="headersOrders" :items="orders" height="450" item-value="name"
-                hide-default-footer></v-data-table>
+                hide-default-footer>
+                <template v-slot:item.actions="{ item }">
+                    <v-btn icon="mdi-delete" variant="text" @click="openWindow(item.correlative)" color="red">
+                    </v-btn>
+                    </template>
+            </v-data-table>
         </v-card>
     </v-container>
 </template>
 
 <script lang="js">
-import { ref, computed } from "vue"
+import { ref, computed, onMounted, inject } from "vue"
 export default {
 
     setup() {
-
+        const axios = inject('$axios')
         const states = ref([
             "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
             "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
@@ -73,43 +78,28 @@ export default {
             { title: '#', align: 'center', key: 'position' },
             { title: 'Account', align: 'center', key: 'account' },
             { title: 'Full Name', align: 'center', key: 'fullName' },
-            { title: 'Virtual Phone', align: 'center', key: 'virtualPhone' },
+            { title: 'Phone Assigned', align: 'center', key: 'virtualPhone' },
+            { title: 'Router', align: 'center', key: 'routerCorrelative'},
+            { title: 'Date to charged', align: 'center', key: 'dateCycle'},
             { title: 'Credit Card', align: 'center', key: 'creditCard' },
             { title: 'Virtual Card', align: 'center', key: 'virtualCreditCard' },
             { title: 'Actions', align: 'center', key: 'actions' },
 
         ])
 
-        const orders = ref([
-            {
-                position: "1",
-                account: "AF896595",
-                fullName: "Anthony Vasquez",
-                virtualPhone: "8889658978",
-                creditCard: "4565456545654565",
-                virtualCreditCard: "14141414141414",
-                actions: "Actions",
-            },
-            {
-                position: "1",
-                account: "AF896595",
-                fullName: "Anthony Vasquez",
-                virtualPhone: "8889658978",
-                creditCard: "4565456545654565",
-                virtualCreditCard: "14141414141414",
-                actions: "Actions",
-            },
-            {
-                position: "1",
-                account: "AF896595",
-                fullName: "Anthony Vasquez",
-                virtualPhone: "8889658978",
-                creditCard: "4565456545654565",
-                virtualCreditCard: "14141414141414",
-                actions: "Actions",
-            },
+        const orders = ref([])
 
-        ])
+        const getTotalOrder = async() => {
+            await axios.get('/order/total').then(res => {
+                orders.value = res.data.data
+            }).catch(err => {
+
+            })
+        }
+
+        onMounted(() => {
+            getTotalOrder()
+        })
 
         return {
             states,
@@ -118,7 +108,10 @@ export default {
             dateSelected,
             formattedRange,
             headersOrders,
-            orders
+            orders, 
+
+            onMounted,
+            getTotalOrder
         }
     }
 }

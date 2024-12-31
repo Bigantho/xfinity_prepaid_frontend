@@ -30,18 +30,29 @@
         </v-row>
         <br>
         <v-card>
-            <v-data-table :headers="headersRouters" :items="routers" height="450" item-value="name"
-                hide-default-footer></v-data-table>
+            <v-data-table :headers="headersRouters" :items="routers" height="450" item-value="name" hide-default-footer>
+                <template v-slot:item.wasShipped="{ item }">
+                    <v-chip variant="tonal" color="#447845" rounded>
+                        {{ item.wasShipped ? "Enviado" : "No enviado" }}
+                    </v-chip>
+                </template>
+                <template v-slot:item.actions="{ item }">
+                    <v-btn icon="mdi-printer-outline" variant="text" @click="openWindow(item.correlative)">
+                    </v-btn>
+                </template>
+            </v-data-table>
         </v-card>
     </v-container>
 </template>
 
 <script lang="js">
-import { ref, computed } from "vue"
+import { ref, computed, inject, onMounted } from "vue"
+import { useRouter } from "vue-router";
 export default {
 
     setup() {
-
+        const axios = inject('$axios')
+        const $router = useRouter()
         const states = ref([
             "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
             "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
@@ -59,143 +70,45 @@ export default {
         // Computed property to format the date range for display
         const formattedRange = computed(() => {
             let date = dateSelected.value;
-
             if (date != null) {
                 date = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
                 menu.value = false
                 return date
             }
-
             return '';
         });
 
         const headersRouters = ref([
             { title: '#', align: 'center', key: 'position' },
-            { title: 'Order Number', align: 'center', key: 'orderNum' },
-            { title: 'Creation Date', align: 'center', key: 'creationDate' },
+            { title: 'Order Number', align: 'center', key: 'account' },
+            { title: 'Name', align: 'center', key: 'name'},
+            { title: 'Correlative', align: 'center', key: 'correlative' },
+            { title: 'Creation Date', align: 'center', key: 'createdAt' },
             { title: 'Brand', align: 'center', key: 'brand' },
-            { title: 'Router', align: 'center', key: 'router' },
-            { title: 'Shipment', align: 'center', key: 'shipment' }
+            { title: 'MAC', align: 'center', key: 'macAddress' },
+            { title: 'Shipment', align: 'center', key: 'wasShipped' },
+            { title: 'Actions', align: 'center', key: 'actions' }
         ])
 
-        const routers = ref([
-            {
-                position: "1",
-                orderNum: "AC85986898",
-                creationDate: "03/10/2024",
-                brand: "HP",
-                router: "A0:B2:56:F1:I9:L7",
-                shipment: "True"
-            },
-            {
-                position: "1",
-                orderNum: "AC85986898",
-                creationDate: "03/10/2024",
-                brand: "HP",
-                router: "A0:B2:56:F1:I9:L7",
-                shipment: "True"
-            },
-            {
-                position: "1",
-                orderNum: "AC85986898",
-                creationDate: "03/10/2024",
-                brand: "HP",
-                router: "A0:B2:56:F1:I9:L7",
-                shipment: "True"
-            },
-            {
-                position: "1",
-                orderNum: "AC85986898",
-                creationDate: "03/10/2024",
-                brand: "HP",
-                router: "A0:B2:56:F1:I9:L7",
-                shipment: "True"
-            },
-            {
-                position: "1",
-                orderNum: "AC85986898",
-                creationDate: "03/10/2024",
-                brand: "HP",
-                router: "A0:B2:56:F1:I9:L7",
-                shipment: "True"
-            },
-            {
-                position: "1",
-                orderNum: "AC85986898",
-                creationDate: "03/10/2024",
-                brand: "HP",
-                router: "A0:B2:56:F1:I9:L7",
-                shipment: "True"
-            },
-            {
-                position: "1",
-                orderNum: "AC85986898",
-                creationDate: "03/10/2024",
-                brand: "HP",
-                router: "A0:B2:56:F1:I9:L7",
-                shipment: "True"
-            },
-            {
-                position: "1",
-                orderNum: "AC85986898",
-                creationDate: "03/10/2024",
-                brand: "HP",
-                router: "A0:B2:56:F1:I9:L7",
-                shipment: "True"
-            },
-            {
-                position: "1",
-                orderNum: "AC85986898",
-                creationDate: "03/10/2024",
-                brand: "HP",
-                router: "A0:B2:56:F1:I9:L7",
-                shipment: "True"
-            },
-            {
-                position: "1",
-                orderNum: "AC85986898",
-                creationDate: "03/10/2024",
-                brand: "HP",
-                router: "A0:B2:56:F1:I9:L7",
-                shipment: "True"
-            },
-            {
-                position: "1",
-                orderNum: "AC85986898",
-                creationDate: "03/10/2024",
-                brand: "HP",
-                router: "A0:B2:56:F1:I9:L7",
-                shipment: "True"
-            },
-            {
-                position: "1",
-                orderNum: "AC85986898",
-                creationDate: "03/10/2024",
-                brand: "HP",
-                router: "A0:B2:56:F1:I9:L7",
-                shipment: "True"
-            },
-            {
-                position: "1",
-                orderNum: "AC85986898",
-                creationDate: "03/10/2024",
-                brand: "HP",
-                router: "A0:B2:56:F1:I9:L7",
-                shipment: "True"
-            },
-            {
-                position: "1",
-                orderNum: "AC85986898",
-                creationDate: "03/10/2024",
-                brand: "HP",
-                router: "A0:B2:56:F1:I9:L7",
-                shipment: "True"
-            }
+        const routers = ref([])
 
 
+        const getRouters = async () => {
+            await axios.get('/router/total').then(res => {
+                routers.value = res.data.data
+            }).catch(err => {
 
+            })
+        }
 
-        ])
+        const openWindow = async (correlative) => {
+            const url = $router.resolve({ name: 'orderPrintLabel', params: { id_router: correlative } }).href
+            window.open(url, '_blank')
+        }
+
+        onMounted(() => {
+            getRouters()
+        })
 
         return {
             states,
@@ -204,7 +117,10 @@ export default {
             dateSelected,
             formattedRange,
             headersRouters,
-            routers
+            routers,
+            getRouters, 
+
+            openWindow
         }
     }
 }

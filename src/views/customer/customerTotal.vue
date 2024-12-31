@@ -31,7 +31,7 @@
         <br>
         <v-card>
             <v-data-table :headers="headersCustomer" :items="customers" height="450" item-value="name"
-                hide-default-footer></v-data-table>
+                ></v-data-table>
         </v-card>
     </v-container>
 </template>
@@ -72,12 +72,12 @@ export default {
         const headersCustomer = ref([
             { title: '#', align: 'center', key: 'position' },
             { title: 'Name', align: 'center', key: 'name' },
+            {title: 'Total orders', align: 'center', key: 'countOrders'},
             { title: 'Address', align: 'center', key: 'address' },
             { title: 'Phone number', align: 'center', key: 'phoneNumber' },
             { title: 'Email', align: 'center', key: 'email' },
             { title: 'Created By', align: 'center', key: 'createdBy' },
             { title: 'Created At', align: 'center', key: 'createdAt' }
-
         ])
 
         const customers = ref([])

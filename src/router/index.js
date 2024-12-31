@@ -5,6 +5,8 @@ import dashboard from '@/views/dashboard.vue'
 
 import order from '@/views/order/order.vue'
 import orderTotal from '@/views/order/orderTotal.vue'
+import orderPlace from '@/views/order/orderPlace.vue'
+import orderPrintLabel from '@/views/order/orderPrintLabel.vue'
 
 import customer from '@/views/customer/customer.vue'
 import customerTotal from '@/views/customer/customerTotal.vue'
@@ -62,6 +64,17 @@ const routes = [
         path: 'total',
         component: orderTotal,
         name: 'orderTotal'
+      }, 
+      {
+        path: 'place',
+        component: orderPlace, 
+        name:'orderPlace'
+      }, 
+      {
+        path: 'print/:id_router',
+        component: orderPrintLabel,
+        name: 'orderPrintLabel',
+        meta: { hideHeader: true } 
       }
     ]
   },
@@ -79,7 +92,6 @@ const routes = [
       }
     ]
   }
-
 ]
 
 

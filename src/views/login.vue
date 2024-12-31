@@ -1,5 +1,5 @@
 <template>
-    <v-app id="inspire">
+    <!-- <v-app id="inspire"> -->
         <v-content>
             <v-container fluid fill-height>
                 <v-layout align-center justify-center>
@@ -31,13 +31,13 @@
                 </v-layout>
             </v-container>
         </v-content>
-    </v-app>
+    <!-- </v-app> -->
 </template>
 
 <style scoped>
-#inspire{
+#inspire {
     /* background-color: red !important; */
-    background: linear-gradient(to bottom, #5426D6, #4D87E2 ) ;
+    /* background: linear-gradient(to bottom, #5426D6, #4D87E2); */
 
 }
 </style>
@@ -93,7 +93,7 @@ export default {
         const checkLogin = async () => {
             try {
                 router.push({ name: 'dashboard' })
-return;
+                return;
                 if (user.value == "" || password.value == "") {
                     // Swal.fire({
                     //     title: "Debes completar todos los campos",

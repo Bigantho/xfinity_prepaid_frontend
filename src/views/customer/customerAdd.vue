@@ -64,7 +64,10 @@
 
     <v-row class="center">
         <v-col cols="12" class="text-center">
-            <v-btn color="primary" append-icon="mdi-arrow-right-thin" @click="saveCustomer">
+            <v-btn color="primary" icon="mdi-content-save" @click="saveCustomer" class="mr-3"></v-btn>
+            <!-- <v-spacer>
+            </v-spacer> -->
+            <v-btn color="primary" append-icon="mdi-arrow-right-thin" @click="$router.push({name: 'customerAddCreditCard'})" :disabled="disabledBtn">
                 NEXT
             </v-btn>
         </v-col>
@@ -83,6 +86,8 @@ import { ref, computed, inject } from 'vue'
 export default {
     setup() {
         const axios = inject('$axios')
+        const disabledBtn = ref(true)
+
 
         const customerName = ref("Anthony")
         const customerLastName = ref("Vasquez")
@@ -132,12 +137,13 @@ export default {
                 
                 name: customerName.value,
                 last_name: customerLastName.value,
-                address_country: customerGender.value,
+                address_country: customerCountrySelected.value,
                 address_street: customerAddress1.value,
                 address_house: "",
                 address_state: customerStateSelected.value,
                 address_city: customerCity.value,
                 address_zipcode: customerZipcode.value,
+                gender: customerGender.value,
                 created_by: 1,
                 birthday: customerBirthday.value,
                 phone_number: customerCellPhone.value,
@@ -152,7 +158,7 @@ export default {
             ).then(response => {
                 // customers.value = response.data.data
                 // items.value = clients;
-                // loading.value = false
+                disabledBtn.value = false
                 // return clients
             }).catch(error => {
                 console.error("Hubo un error en la solicitud: ", error);
@@ -180,7 +186,8 @@ export default {
             customerZipcode,
             customerAddress1,
             customerAddress2,
-            customerCountrySelected
+            customerCountrySelected, 
+            disabledBtn
 
         }
     }

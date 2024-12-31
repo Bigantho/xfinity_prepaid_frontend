@@ -1,42 +1,56 @@
 <template>
     <v-container>
-        <h1 class="text-center">Routers Add</h1>
         <v-card class="pa-8">
+            <h1 class="text-center">Routers Add</h1>
             <v-row>
-                <v-col cols="1"><v-icon icon="mdi-arrow-top-left-bold-box-outline" @click="$router.go(-1)">
+                <v-col cols="2"><v-icon icon="mdi-arrow-top-left-bold-box-outline" @click="$router.go(-1)">
                     </v-icon>
                 </v-col>
-                <v-col class="text-center">
-                    <h2>Router Information</h2>
+
+                <v-col class="text-end">
+                    <h2><strong>{{ `${routerCorrelative}-${routerCorrelativeNum}` }}</strong></h2>
                 </v-col>
             </v-row>
             <br>
             <v-row>
                 <v-col cols="6">
-                    <v-text-field label="Serial">
+                    <v-text-field label="Name" v-model="routerName">
 
                     </v-text-field>
                 </v-col>
                 <v-col cols="6">
-                    <v-text-field label="MAC Address">
+                    <v-text-field label="Brand" v-model="routerBrand">
 
                     </v-text-field>
                 </v-col>
             </v-row>
             <v-row>
                 <v-col cols="6">
-                    <v-text-field label="Model">
+                    <v-text-field label="Serial" v-model="routerSerial">
 
                     </v-text-field>
                 </v-col>
                 <v-col cols="6">
-                    <v-select :items="years" v-model="yearsSelected" label="Año"></v-select>
+                    <v-text-field label="MAC Address" v-model="routerMAC">
+
+                    </v-text-field>
                 </v-col>
             </v-row>
+            <v-row>
+                <v-col cols="6">
+                    <v-text-field label="Model" v-model="routerModel">
+
+                    </v-text-field>
+                </v-col>
+                <v-col cols="6">
+                    <v-select :items="years" v-model="routerYearSelected" label="Year"></v-select>
+                </v-col>
+            </v-row>
+
             <br>
             <v-row>
                 <v-col class="text-center">
-                    <v-btn prepend-icon="mdi mdi-content-save" base-color="#4D87E2" size="large">
+                    <v-btn prepend-icon="mdi mdi-content-save" base-color="#4D87E2" size="large" @click="saveRouters">
                         Save
                     </v-btn>
                 </v-col>
@@ -46,11 +60,27 @@
 </template>
 
 <script lang="js">
-import { ref } from "vue"
+import { ref, inject, onMounted } from "vue"
+import { useRouter } from 'vue-router';
+
 export default {
 
     setup() {
-        const yearsSelected = ref("2001")
+        const $router = useRouter();
+
+        const $axios = inject('$axios')
+
+        const routerName = ref("Rou 1")
+        const routerBrand = ref("HP")
+        const routerSerial = ref("568956889644")
+        const routerMAC = ref("A8:T7:U1:E6")
+        const routerModel = ref("XTR50")
+        const routerYearSelected = ref("2001")
+        const routerCorrelativeNum = ref("")
+        const routerCorrelative = ref("CUXPR")
+
+        const totalRouters = ref(0)
+
         const years = ref([
             "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009",
             "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019",
@@ -60,9 +90,78 @@ export default {
         ]
         )
 
+
+        const saveRouters = async () => {
+
+            const data = {
+                mac_address: routerMAC.value,
+                name: routerName.value,
+                brand: routerBrand.value,
+                serial: routerSerial.value,
+                model: routerModel.value,
+                year: routerYearSelected.value,
+                correlative: `${routerCorrelative.value}-${routerCorrelativeNum.value}`,
+                is_deleted: "0",
+                active: "1",
+            }
+            await $axios.post('/router/create', data).then(res => {
+                openWindow()
+                generateCorrelative()
+                clearFields()
+            }).catch(err => {
+
+            })
+        }
+
+        const getRouters = async () => {
+            await $axios.get('/router/total').then(res => {
+                totalRouters.value = res.data.data.length
+            }).catch(err => {
+
+            })
+        }
+
+        const generateCorrelative = async () => {
+            await getRouters()
+            const correlativeNumber = (totalRouters.value + 1).toString().padStart(10, '0');
+            routerCorrelativeNum.value = correlativeNumber
+        }
+
+        const openWindow = async () => {
+            const url = $router.resolve({ name: 'orderPrintLabel', params: { id_router: `${routerCorrelative.value}-${routerCorrelativeNum.value}` } }).href
+            window.open(url, '_blank')
+        }
+
+        const clearFields = () => {
+            routerName.value = ""
+            routerBrand.value = ""
+            routerSerial.value = ""
+            routerMAC.value = ""
+            routerModel.value = ""
+            routerYearSelected.value = ""
+
+        }
+
+        onMounted(() => {
+            generateCorrelative()
+        })
+
         return {
             years,
-            yearsSelected
+            routerName,
+            routerBrand,
+            routerSerial,
+            routerMAC,
+            routerModel,
+            routerYearSelected,
+            routerCorrelative,
+            routerCorrelativeNum,
+
+            saveRouters,
+            totalRouters,
+
+            openWindow,
+            clearFields
         }
     }
 }

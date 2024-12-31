@@ -16,33 +16,34 @@
 
                 </v-col>
             </v-row>
-            <v-btn append-icon="mdi mdi-content-save" color="#4D87E2">
-                Finish Process
+            <v-row>
+                <v-col cols="6">
+                    <v-text-field label="Phone Number" variant="outlined" v-model="phoneNumber">
+
+                    </v-text-field>
+
+                </v-col>
+            </v-row>
+            <v-btn append-icon="mdi mdi-content-save" color="#4D87E2" @click="saveVirtualPhone">
+                Save and Finish Process
             </v-btn>
-            <v-btn class="x-btn">
-test ntn
-            </v-btn>
-            <!-- <v-btn>
-                Test
-                <template #append>
-                    <img src="../../assets/cld_1.svg" alt="Custom Icon"  />
-                </template>
-            </v-btn> -->
         </v-card>
     </v-container>
 </template>
 
-<style scoped>
-
-.x-btn{
-    background-color: #51ecec30;
-}</style>
+<style scoped></style>
 
 <script lang="js">
-import { ref } from 'vue'
+import { ref, inject } from 'vue'
+import { useRouter } from 'vue-router';
 export default {
 
     setup() {
+        const $router = useRouter();
+
+        const axios = inject('$axios')
+
+        const phoneNumber = ref("")
 
         const states = ref([
             "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
@@ -60,9 +61,28 @@ export default {
             '896', '789', '369', '888', '362'
         ])
 
+        const saveVirtualPhone = async () => {
+
+            const phoneNumberObj = {
+                number: phoneNumber.value,
+                acquired_by: "1"
+            }
+
+            await axios.post('/virtual_phone_number/create', phoneNumberObj).then(res => {
+                $router.push({ name: 'dashboard' })
+            }).catch(err => {
+                console.log(err);
+                
+                alert("Something went wrong!", err)
+            })
+        }
+
+
         return {
             states,
-            areaCodes
+            areaCodes,
+            phoneNumber,
+            saveVirtualPhone
         }
     }
 }

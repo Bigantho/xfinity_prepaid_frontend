@@ -52,6 +52,12 @@
 
             </v-list-item>
 
+            <v-list-item prepend-icon="mdi mdi-account-group" title="Customers" value="8"
+              @click="$router.push({ name: 'customerTotal' })">
+
+            </v-list-item>
+
+
             <v-list-item prepend-icon="mdi mdi-plus" title="Payment History" value="2"
               @click="$router.push({ name: 'customerPaymentHistory' })">
 
@@ -83,12 +89,14 @@
               <v-list-item v-bind="props" prepend-icon="mdi mdi-file-document-check-outline" title="Orders"
                 value="starred"></v-list-item>
             </template>
-            <v-list-item prepend-icon="mdi mdi-plus" title="Add Order" value="6" 
-            @click="$router.push({ name: 'orderTotal' })"
-
-            ></v-list-item>
-
+            <v-list-item prepend-icon="mdi mdi-plus" title="Place Order" value="6"
+              @click="$router.push({ name: 'orderPlace' })"></v-list-item>
+            <v-list-item prepend-icon="mdi mdi-format-list-bulleted" title="List Order" value="7"
+              @click="$router.push({ name: 'orderTotal' })">
+            </v-list-item>
           </v-list-group>
+
+        
         </v-list>
       </v-navigation-drawer>
     </v-layout>
@@ -140,11 +148,18 @@ export default {
     const logOut = () => {
       router.push({ name: 'login' })
     }
+    const userId = "1"
+
+    const openWindow = async () => {
+      const url = router.resolve({ name: 'orderPrintLabel', params: { id_router: userId } }).href
+      window.open(url, '_blank')
+    }
 
 
     return {
 
-      logOut
+      logOut,
+      openWindow
     }
   }
 }

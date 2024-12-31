@@ -23,26 +23,38 @@
             <br>
             <v-row>
                 <v-col cols="6">
-                    <v-text-field label="Number Card">
+                    <v-text-field label="Number Card" v-model="cdtCardNumber">
 
                     </v-text-field>
                 </v-col>
                 <v-col cols="6">
-                    <v-text-field label="Card Holder">
+                    <v-text-field label="Card Holder" v-model="cdtCardHolder">
 
                     </v-text-field>
                 </v-col>
             </v-row>
             <v-row>
                 <v-col cols="6">
-                    <v-text-field label="Expiration Date">
+                    <v-text-field label="Expiration Date" v-model="cdtCardExpDate">
 
                     </v-text-field>
                 </v-col>
                 <v-col cols="6">
-                    <v-text-field label="CVV">
+                    <v-text-field label="CVV" v-model="cdtCardCVV">
 
                     </v-text-field>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="6">
+                    <v-select label="Card Provider" :items="cardCreditTypes" v-model="cdtCardTypesSelected">
+
+                    </v-select>
+                </v-col>
+                <v-col cols="6">
+                    <!-- <v-text-field label="CVV">
+
+                    </v-text-field> -->
                 </v-col>
             </v-row>
             <br>
@@ -90,11 +102,13 @@
                 </v-col>
                 <v-col cols="3"></v-col>
             </v-row>
+
             <v-row>
-                <v-col class="text-center">
-                    <v-btn append-icon="mdi mdi-arrow-right-thin" base-color="#4D87E2" size="large"
-                        @click="$router.push({ name: 'customerAddVirtualPhone' })">
-                        Next
+                <v-col cols="12" class="text-center">
+                    <v-btn color="primary" icon="mdi-content-save" @click="saveCreditCard" class="mr-3"></v-btn>
+                    <v-btn color="primary" append-icon="mdi-arrow-right-thin"
+                        @click="$router.push({ name: 'customerAddVirtualPhone' })" :disabled="disabledBtn">
+                        NEXT
                     </v-btn>
                 </v-col>
             </v-row>
@@ -105,10 +119,19 @@
 <style scoped></style>
 
 <script lang="js">
-import { ref, computed } from 'vue'
+import { ref, computed, inject } from 'vue'
 export default {
 
     setup() {
+        const axios = inject('$axios')
+        const disabledBtn = ref(true)
+        const cardCreditTypes = ref(['VISA', 'Master Card', 'American Express'])
+        const cdtCardNumber = ref("4845898956562525")
+        const cdtCardHolder = ref("Anthony Vasquez")
+        const cdtCardExpDate = ref("052565")
+        const cdtCardCVV = ref("999")
+        const cdtCardTypesSelected = ref("VISA")
+
         const servicesSelected = ref(null)
         const services = ref([
             {
@@ -137,10 +160,41 @@ export default {
             }))
         );
 
+        const saveCreditCard = async () => {
+
+            const cdtCardObj = {
+                number: cdtCardNumber.value,
+                type: cdtCardTypesSelected.value,
+                card_holder: cdtCardHolder.value,
+                cvc: cdtCardCVV.value,
+                exp_date: cdtCardExpDate.value,
+                active: "1",
+                is_deleted: "0"
+            }
+
+            await axios.post('/credit_card/create',cdtCardObj).then(res => {
+                disabledBtn.value = false
+            }).catch(err => {
+
+            })
+        }
+
+
+
         return {
             services,
             servicesSelected,
-            formattedServices
+            formattedServices,
+            saveCreditCard,
+            
+            disabledBtn,
+
+            cardCreditTypes,
+            cdtCardNumber,
+            cdtCardHolder,
+            cdtCardExpDate,
+            cdtCardTypesSelected,
+            cdtCardCVV
         }
     }
 
