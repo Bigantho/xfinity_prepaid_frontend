@@ -19,6 +19,10 @@ import customerEdit from '@/views/customer/customerEdit.vue'
 import router from '@/views/router/router.vue'
 import routerTotal from '@/views/router/routerTotal.vue'
 import routerAdd from '@/views/router/routerAdd.vue'
+
+import payment from '@/views/payment/payment.vue'
+import paymentTotal from '@/views/payment/paymentTotal.vue'
+import paymentAdd from '@/views/payment/paymentAdd.vue'
 // import { authGuard } from './guards'
 
 const routes = [
@@ -91,7 +95,27 @@ const routes = [
         name: 'routerAdd'
       }
     ]
-  }
+  },
+  {
+    path: '/payment', component: payment, children: [
+      {
+        path: 'total',
+        component: paymentTotal,
+        name: 'paymentTotal'
+      }, 
+      {
+        path: 'add',
+        component: paymentAdd, 
+        name:'paymentAdd'
+      }, 
+      // {
+      //   path: 'print/:id_router',
+      //   component: orderPrintLabel,
+      //   name: 'orderPrintLabel',
+      //   meta: { hideHeader: true } 
+      // }
+    ]
+  },
 ]
 
 
