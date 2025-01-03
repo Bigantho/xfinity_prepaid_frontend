@@ -6,8 +6,8 @@
         <v-row>
             <v-col cols="3">
                 <v-btn prepend-icon="mdi mdi-plus-circle" base-color="#4D87E2"
-                    @click="$router.push({ name: 'customerAdd' })">
-                    New Customer
+                    @click="$router.push({ name: 'orderPlace' })">
+                    Place Order
                 </v-btn>
             </v-col>
             <v-col cols="3" offset="1">
@@ -31,9 +31,9 @@
         <br>
         <v-card>
             <v-data-table :headers="headersOrders" :items="orders" height="450" item-value="name"
-                hide-default-footer>
+               >
                 <template v-slot:item.actions="{ item }">
-                    <v-btn icon="mdi-delete" variant="text" @click="openWindow(item.correlative)" color="red">
+                    <v-btn icon="mdi-delete" variant="text" @click="openWindow(item.correlative)" color="red" disabled>
                     </v-btn>
                     </template>
             </v-data-table>
@@ -80,7 +80,7 @@ export default {
             { title: 'Full Name', align: 'center', key: 'fullName' },
             { title: 'Phone Assigned', align: 'center', key: 'virtualPhone' },
             { title: 'Router', align: 'center', key: 'routerCorrelative'},
-            { title: 'Date to charged', align: 'center', key: 'dateCycle'},
+            { title: 'Refill Date', align: 'center', key: 'refillDate'},
             { title: 'Credit Card', align: 'center', key: 'creditCard' },
             { title: 'Virtual Card', align: 'center', key: 'virtualCreditCard' },
             { title: 'Actions', align: 'center', key: 'actions' },

@@ -10,7 +10,7 @@
                     New Payment
                 </v-btn>
             </v-col>
-            <v-col cols="3" offset="1">
+            <v-col cols="3" offset="4">
                 <v-menu v-model="menu" :close-on-content-click="false" location="end">
                     <template v-slot:activator="{ props }">
                         <v-text-field append-inner-icon="mdi mdi-calendar" label="Creation Date" v-bind="props"
@@ -21,7 +21,6 @@
                     </v-card>
                 </v-menu>
             </v-col>
-            <v-col cols="3"> <v-select :items="states" label="State"></v-select> </v-col>
             <v-col cols="2">
                 <v-btn append-icon="mdi mdi-download" variant="outlined" base-color="green">
                     Excel
@@ -30,16 +29,7 @@
         </v-row>
         <br>
         <v-card>
-            <v-data-table :headers="headersPayment" :items="payments" height="450" item-value="name" hide-default-footer>
-                <template v-slot:item.wasShipped="{ item }">
-                    <v-chip variant="tonal" color="#447845" rounded>
-                        {{ item.wasShipped ? "Enviado" : "No enviado" }}
-                    </v-chip>
-                </template>
-                <template v-slot:item.actions="{ item }">
-                    <v-btn icon="mdi-printer-outline" variant="text" @click="openWindow(item.correlative)">
-                    </v-btn>
-                </template>
+            <v-data-table :headers="headersPayment" :items="payments" height="450" item-value="name" >
             </v-data-table>
         </v-card>
     </v-container>
@@ -53,18 +43,7 @@ export default {
     setup() {
         const axios = inject('$axios')
         const $router = useRouter()
-        const states = ref([
-            "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
-            "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
-            "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana",
-            "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota",
-            "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire",
-            "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota",
-            "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island",
-            "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont",
-            "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
-        ])
-
+   
         const menu = ref(false)
         const dateSelected = ref(null)
         // Computed property to format the date range for display
@@ -80,8 +59,9 @@ export default {
 
         const headersPayment = ref([
             { title: '#', align: 'center', key: 'position' },
+            { title: 'Account', align: 'center', key: 'account'},
             { title: 'Amount', align: 'center', key: 'amount' },
-            { title: '# Trx', align: 'center', key: 'trx_id' }
+            { title: '# Trx', align: 'center', key: 'trxId' }
         ])
 
         const payments = ref([])
@@ -95,26 +75,20 @@ export default {
             })
         }
 
-        const openWindow = async (correlative) => {
-            const url = $router.resolve({ name: 'orderPrintLabel', params: { id_router: correlative } }).href
-            window.open(url, '_blank')
-        }
-
+     
         onMounted(() => {
             getPayments()
         })
 
         return {
-            states,
 
             menu,
             dateSelected,
             formattedRange,
             headersPayment,
             payments,
-            getPayments, 
+            getPayments
 
-            openWindow
         }
     }
 }

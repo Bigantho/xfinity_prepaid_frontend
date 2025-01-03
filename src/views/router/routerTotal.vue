@@ -10,6 +10,8 @@
                     New Router
                 </v-btn>
             </v-col>
+        
+
             <v-col cols="3" offset="1">
                 <v-menu v-model="menu" :close-on-content-click="false" location="end">
                     <template v-slot:activator="{ props }">
@@ -48,6 +50,7 @@
 <script lang="js">
 import { ref, computed, inject, onMounted } from "vue"
 import { useRouter } from "vue-router";
+import html2canvas from "html2canvas";
 export default {
 
     setup() {
@@ -81,7 +84,7 @@ export default {
         const headersRouters = ref([
             { title: '#', align: 'center', key: 'position' },
             { title: 'Order Number', align: 'center', key: 'account' },
-            { title: 'Name', align: 'center', key: 'name'},
+            { title: 'Name', align: 'center', key: 'name' },
             { title: 'Correlative', align: 'center', key: 'correlative' },
             { title: 'Creation Date', align: 'center', key: 'createdAt' },
             { title: 'Brand', align: 'center', key: 'brand' },
@@ -106,6 +109,7 @@ export default {
             window.open(url, '_blank')
         }
 
+        
         onMounted(() => {
             getRouters()
         })
@@ -118,9 +122,10 @@ export default {
             formattedRange,
             headersRouters,
             routers,
-            getRouters, 
+            getRouters,
 
-            openWindow
+            openWindow,
+
         }
     }
 }

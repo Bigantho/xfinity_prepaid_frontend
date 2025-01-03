@@ -98,10 +98,10 @@
 
           <v-list-group value="payment">
             <template v-slot:activator="{ props }">
-              <v-list-item v-bind="props" prepend-icon="mdi mdi-file-document-check-outline" title="Orders"
+              <v-list-item v-bind="props" prepend-icon="mdi mdi-account-credit-card-outline" title="Payments"
                 value="starred"></v-list-item>
             </template>
-            <v-list-item prepend-icon="mdi mdi-plus" title="Payments" value="6"
+            <v-list-item prepend-icon="mdi mdi-plus" title="Payments" value="9"
               @click="$router.push({ name: 'paymentTotal' })"></v-list-item>
           </v-list-group>
 

@@ -2,18 +2,20 @@
     <v-container>
         <v-card class="pa-10">
             <v-row>
-                <v-col></v-col>
-                <v-col></v-col>
-                <v-col cols="2">
+                <v-col cols="6">
+                    <v-btn icon="mdi mdi-arrow-top-left-bold-box-outline" variant="text"
+                        @click="$router.push({ name: 'orderTotal' })">
+                    </v-btn>
+                </v-col>
+                <v-col cols="3" offset="3" class="text-end">
                     <v-text-field label="Correlative" v-model="orderCorrelative" readonly>
-
                     </v-text-field>
                 </v-col>
             </v-row>
 
 
             <v-row class="text-center">
-                <v-col cols="6">                   
+                <v-col cols="6">
                     <v-select label="Select Customer" :items="customers" item-title="name" item-value="id"
                         v-model="orderCustomerSeleted">
                     </v-select>
@@ -26,7 +28,7 @@
             </v-row>
             <v-row class="text-center">
                 <v-col cols="6">
-                   
+
                     <v-text-field v-model="orderXfinityUser" label="Xfinity User">
 
                     </v-text-field>
@@ -39,15 +41,14 @@
             <v-row class="text-center">
                 <v-col cols="6">
                     <v-menu v-model="menu" :close-on-content-click="false" location="end">
-                    <template v-slot:activator="{ props }">
-                        <v-text-field append-inner-icon="mdi mdi-calendar" label="Refill Payment Date" v-bind="props"
-                            v-model="formattedRange" variant="outlined"></v-text-field>
-                    </template>
-                    <v-card min-width="300">
-                        <v-date-picker v-model="dateSelected"></v-date-picker>
-                    </v-card>
-                </v-menu>
-
+                        <template v-slot:activator="{ props }">
+                            <v-text-field append-inner-icon="mdi mdi-calendar" label="Refill Payment Date"
+                                v-bind="props" v-model="formattedRange" variant="outlined"></v-text-field>
+                        </template>
+                        <v-card min-width="300">
+                            <v-date-picker v-model="refillDate"></v-date-picker>
+                        </v-card>
+                    </v-menu>
                 </v-col>
             </v-row>
             <v-row class="text-center">
@@ -103,7 +104,8 @@ export default {
                 id_router: orderRouterSelected.value,
                 xfinity_user: orderXfinityUser.value,
                 xfinity_password: orderXfinityPassword.value,
-                account: orderCorrelative.value
+                account: orderCorrelative.value,
+                refill_payment_date: refillDate.value,
             }
             await $axios.post('/order/place', data).then(res => {
 
@@ -118,10 +120,10 @@ export default {
         }
 
         const menu = ref(false)
-        const dateSelected = ref(null)
+        const refillDate = ref(null)
         // Computed property to format the date range for display
         const formattedRange = computed(() => {
-            let date = dateSelected.value;
+            let date = refillDate.value;
             if (date != null) {
                 date = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
                 menu.value = false
@@ -154,7 +156,7 @@ export default {
             orderCorrelative,
 
             menu,
-            dateSelected,
+            refillDate,
             formattedRange,
 
         }
