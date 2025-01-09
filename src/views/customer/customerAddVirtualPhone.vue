@@ -68,7 +68,6 @@ export default {
 
             const phoneNumberObj = {
                 number: phoneNumber.value,
-                // acquired_by: "1"
                 id_customer: customerId
 
             }
