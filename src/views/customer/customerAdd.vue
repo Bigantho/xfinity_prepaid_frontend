@@ -9,7 +9,9 @@
             <v-text-field label="Apellido" variant="outlined" v-model="customerLastName"></v-text-field>
         </v-col>
         <v-col cols="4">
-            <v-text-field label="Gender" variant="outlined" v-model="customerGender"></v-text-field>
+            <v-select :items="genders" v-model="customerGenderSelected" variant="outlined" label="Gender">
+            </v-select>
+            <!-- <v-text-field label="Gender" variant="outlined" v-model="customerGender"></v-text-field> -->
         </v-col>
     </v-row>
     <v-row>
@@ -41,7 +43,7 @@
     <br>
     <v-row>
         <v-col cols="4">
-            <v-select label="State" :items="states" v-model="customerStateSelected"></v-select>
+            <v-select label="State" :items="states" variant="outlined" v-model="customerStateSelected"></v-select>
         </v-col>
         <v-col cols="4">
             <v-text-field label="City" variant="outlined" v-model="customerCity"></v-text-field>
@@ -67,7 +69,8 @@
             <v-btn color="primary" icon="mdi-content-save" @click="saveCustomer" class="mr-3"></v-btn>
             <!-- <v-spacer>
             </v-spacer> -->
-            <v-btn color="primary" append-icon="mdi-arrow-right-thin" @click="$router.push({name: 'customerAddCreditCard'})" :disabled="disabledBtn">
+            <v-btn color="primary" append-icon="mdi-arrow-right-thin"
+                @click="$router.push({ name: 'customerAddCreditCard' })" :disabled="disabledBtn">
                 NEXT
             </v-btn>
         </v-col>
@@ -83,24 +86,27 @@
 </style>
 <script lang="js">
 import { ref, computed, inject } from 'vue'
+import Swal from 'sweetalert2';
+
 export default {
     setup() {
         const axios = inject('$axios')
         const disabledBtn = ref(true)
 
+        const genders = ref(['Male', 'Female', 'Other'])
 
-        const customerName = ref("Anthony")
-        const customerLastName = ref("Vasquez")
-        const customerGender = ref("Male")
+        const customerName = ref("")
+        const customerLastName = ref("")
+        const customerGenderSelected = ref("")
         const customerBirthday = ref(null)
-        const customerCellPhone = ref("1412123241")
-        const customerEmail = ref("avasque9@red5g.com")
-        const customerHomePhone = ref("24242414")
+        const customerCellPhone = ref("")
+        const customerEmail = ref("")
+        const customerHomePhone = ref("")
         const customerStateSelected = ref("")
-        const customerCity = ref("Mejicanos")
-        const customerZipcode = ref("01101")
-        const customerAddress1 = ref("San Salvador, Col Roma")
-        const customerAddress2 = ref("Salvador Mundi")
+        const customerCity = ref("")
+        const customerZipcode = ref("")
+        const customerAddress1 = ref("")
+        const customerAddress2 = ref("")
         const customerCountrySelected = ref("USA")
 
         const states = ref([
@@ -115,7 +121,6 @@ export default {
             "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
         ])
 
-        const countrySelected = "USA"
 
         const menu = ref(false)
         // Computed property to format the date range for display
@@ -134,7 +139,7 @@ export default {
         const saveCustomer = async () => {
 
             const customerObj = {
-                
+
                 name: customerName.value,
                 last_name: customerLastName.value,
                 address_country: customerCountrySelected.value,
@@ -143,8 +148,8 @@ export default {
                 address_state: customerStateSelected.value,
                 address_city: customerCity.value,
                 address_zipcode: customerZipcode.value,
-                gender: customerGender.value,
-                created_by: 1,
+                gender: customerGenderSelected.value,
+                // created_by: 17,
                 birthday: customerBirthday.value,
                 phone_number: customerCellPhone.value,
                 email: customerEmail.value,
@@ -156,19 +161,36 @@ export default {
                 customerObj
 
             ).then(response => {
-                // customers.value = response.data.data
-                // items.value = clients;
+
                 disabledBtn.value = false
-                // return clients
+                localStorage.setItem('customerId', response.data.record.id)
+                Swal.fire({
+                    title: "Customer Created",
+                    text: response.data.msg,
+                    icon: "success",
+                    confirmButtonColor: "#3085d6",
+                    confirmButtonText: "OK",
+                    customClass: {
+                        confirmButton: 'custom-text-color-confirm',
+                    }
+                })
             }).catch(error => {
+                Swal.fire({
+                    title: "Something went wrong!",
+                    text: error.response.data.msg,
+                    icon: "warning",
+                    confirmButtonColor: "#3085d6",
+                    confirmButtonText: "OK",
+                    customClass: {
+                        confirmButton: 'custom-text-color-confirm',
+                    }
+                })
                 console.error("Hubo un error en la solicitud: ", error);
-                // return error;
             });
         }
 
         return {
             states,
-            countrySelected,
 
             menu,
             formattedRange,
@@ -176,7 +198,7 @@ export default {
 
             customerName,
             customerLastName,
-            customerGender,
+            customerGenderSelected,
             customerBirthday,
             customerCellPhone,
             customerEmail,
@@ -186,8 +208,10 @@ export default {
             customerZipcode,
             customerAddress1,
             customerAddress2,
-            customerCountrySelected, 
-            disabledBtn
+            customerCountrySelected,
+            disabledBtn, 
+
+            genders
 
         }
     }

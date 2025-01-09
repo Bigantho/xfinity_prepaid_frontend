@@ -6,7 +6,7 @@
         <v-toolbar-title class="text-center">
 
           <v-btn @click="$router.push({ name: 'dashboard' })">
-            Xfinity Prepaid
+            <v-img src="/Logo-XfinityPrepaidWhiteHorizontal.svg" width="100" height="45" </v-img>
           </v-btn>
         </v-toolbar-title>
         <br>
@@ -32,7 +32,7 @@
       </v-app-bar>
       <v-navigation-drawer expand-on-hover rail>
         <v-list>
-          <v-list-item prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg" subtitle="avasquez@red5g.com"
+          <v-list-item prepend-icon="mdi mdi-account-tie" subtitle="avasquez@red5g.com"
             title="Anthony Vasquez"></v-list-item>
         </v-list>
 
@@ -58,16 +58,16 @@
             </v-list-item>
 
 
-            <v-list-item prepend-icon="mdi mdi-plus" title="Payment History" value="2"
+            <v-list-item prepend-icon="mdi mdi-clipboard-text-clock-outline" title="Payment History" value="2"
               @click="$router.push({ name: 'customerPaymentHistory' })">
 
             </v-list-item>
 
 
-            <v-list-item prepend-icon="mdi mdi-plus" title="Edit Customer" value="3"
+            <!-- <v-list-item prepend-icon="mdi mdi-plus" title="Edit Customer" value="3"
               @click="$router.push({ name: 'customerEdit' })">
 
-            </v-list-item>
+            </v-list-item> -->
 
           </v-list-group>
 
@@ -101,11 +101,13 @@
               <v-list-item v-bind="props" prepend-icon="mdi mdi-account-credit-card-outline" title="Payments"
                 value="starred"></v-list-item>
             </template>
-            <v-list-item prepend-icon="mdi mdi-plus" title="Payments" value="9"
+            <v-list-item prepend-icon="mdi mdi-plus" title="Add Payment" value="9"
+              @click="$router.push({ name: 'paymentAdd' })"></v-list-item>
+            <v-list-item prepend-icon="mdi mdi-format-list-bulleted" title="Payments" value="10"
               @click="$router.push({ name: 'paymentTotal' })"></v-list-item>
           </v-list-group>
 
-        
+
         </v-list>
       </v-navigation-drawer>
     </v-layout>

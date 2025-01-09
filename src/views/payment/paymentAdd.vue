@@ -14,8 +14,10 @@
                         item-value="id" v-model="orderSelected">
                     </v-select>
                 </v-col>
-                <v-col cols="6"> <v-text-field label="Amount" variant="outlined" v-model="paymentAmount">
-                    </v-text-field> </v-col>
+                <v-col cols="6"> 
+                    <v-select :items="paymentTypeFormatted" v-model="paymentTypeSelected" item-title="title" item-value="id" variant="outlined" label="Payment type">
+                    </v-select>
+                 </v-col>
                 <v-col cols="6"></v-col>
 
             </v-row>
@@ -25,7 +27,8 @@
                     </v-text-field>
                 </v-col>
                 <v-col cols="6">
-                    <v-checkbox label="Is refill payment?" v-model="isRefillPayment"></v-checkbox>
+                  
+
                 </v-col>
             </v-row>
             <v-row>
@@ -43,6 +46,8 @@
 
 <script lang="js">
 import { onMounted, ref, inject, computed } from 'vue'
+import { useRouter } from 'vue-router';
+import Swal from 'sweetalert2';
 
 export default {
 
@@ -51,9 +56,12 @@ export default {
         const $axios = inject('$axios')
 
         const orderSelected = ref(null)
-        const paymentAmount = ref(null)
+        const paymentType = ref([])
+        const paymentTypeSelected = ref(null)
         const paymentTrxId = ref(null)
-        const isRefillPayment = ref(null)
+        
+        const router = useRouter();
+
 
         const getOrders = async () => {
             await $axios.get('/order/total').then(res => {
@@ -70,23 +78,63 @@ export default {
             }))
         )
 
+
+        const paymentTypeFormatted = computed(() =>
+            paymentType.value.map((e) => ({
+                ...e,
+                title: `${e.name} - $${e.amount}`
+            }))
+    )
         const savePayment = async () => {
 
             const dataToSave = {
                 orderId: orderSelected.value,
-                amount: paymentAmount.value,
                 trx_id: paymentTrxId.value,
-                is_refill: isRefillPayment.value,
+                id_type_payments: paymentTypeSelected.value
 
             }
             await $axios.post('/payment/create', dataToSave).then(res => {
                 orders.value = res.data.data
+                Swal.fire({
+                    title: "Payment Created",
+                    text: res.data.msg,
+                    icon: "success",
+                    confirmButtonColor: "#3085d6",
+                    confirmButtonText: "OK",
+                    customClass: {
+                        confirmButton: 'custom-text-color-confirm',
+                    }
+                }).then((res)=>{
+                    if (res.isConfirmed) {
+                        router.push({ name: 'paymentTotal' })
+
+                    }
+                })
+            }).catch(err => {
+                Swal.fire({
+                    title: "Something went wrong!",
+                    text: err.response.data.msg,
+                    icon: "warning",
+                    confirmButtonColor: "#3085d6",
+                    confirmButtonText: "OK",
+                    customClass: {
+                        confirmButton: 'custom-text-color-confirm',
+                    }
+                })
+            })
+        }
+
+        const getPaymentsType = async() => {
+            await $axios.get('/payment/catalog').then(res => {
+                paymentType.value = res.data.data
             }).catch(err => {
 
             })
         }
+
         onMounted(() => {
             getOrders()
+            getPaymentsType()
         })
 
         return {
@@ -96,8 +144,10 @@ export default {
             savePayment,
             orderSelected,
             paymentTrxId,
-            paymentAmount,
-            isRefillPayment
+            getPaymentsType, 
+            paymentType, 
+            paymentTypeSelected,
+            paymentTypeFormatted
         }
     }
 

@@ -14,16 +14,16 @@
                 <v-menu v-model="menu" :close-on-content-click="false" location="end">
                     <template v-slot:activator="{ props }">
                         <v-text-field append-inner-icon="mdi mdi-calendar" label="Creation Date" v-bind="props"
-                            v-model="formattedRange" variant="outlined"></v-text-field>
+                            v-model="formattedRange" variant="outlined" disabled></v-text-field>
                     </template>
                     <v-card min-width="300">
                         <v-date-picker v-model="dateSelected"></v-date-picker>
                     </v-card>
                 </v-menu>
             </v-col>
-            <v-col cols="3"> <v-select :items="states" label="State"></v-select> </v-col>
+            <v-col cols="3"> <v-select :items="states" label="State" disabled></v-select> </v-col>
             <v-col cols="2">
-                <v-btn append-icon="mdi mdi-download" variant="outlined" base-color="green">
+                <v-btn append-icon="mdi mdi-download" variant="outlined" base-color="green" disabled>
                     Excel
                 </v-btn>
             </v-col>
@@ -31,17 +31,22 @@
         <br>
         <v-card>
             <v-data-table :headers="headersCustomer" :items="customers" height="450" item-value="name"
-                ></v-data-table>
+                >
+                <template v-slot:item.createdAt="{ item }">
+                    {{ proxy.$globalMethods.convertToUTC6(item.createdAt)  }}
+                </template>
+            </v-data-table>
         </v-card>
     </v-container>
 </template>
 
 <script lang="js">
-import { ref, computed, onMounted, inject } from "vue"
+import { ref, computed, onMounted, inject , getCurrentInstance} from "vue"
 export default {
 
     setup() {
         const axios = inject('$axios')
+        const { proxy } = getCurrentInstance()
         const states = ref([
             "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
             "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
@@ -98,8 +103,6 @@ export default {
         }
 
         onMounted(() =>{
-            console.log("m");
-            
             getCustomers()
         })
         return {
@@ -110,7 +113,9 @@ export default {
             formattedRange,
             headersCustomer,
             customers, 
-            getCustomers
+            getCustomers, 
+
+            proxy
         }
     }
 }

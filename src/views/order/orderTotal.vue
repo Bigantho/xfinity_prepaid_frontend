@@ -14,39 +14,47 @@
                 <v-menu v-model="menu" :close-on-content-click="false" location="end">
                     <template v-slot:activator="{ props }">
                         <v-text-field append-inner-icon="mdi mdi-calendar" label="Creation Date" v-bind="props"
-                            v-model="formattedRange" variant="outlined"></v-text-field>
+                            v-model="formattedRange" variant="outlined" disabled></v-text-field>
                     </template>
                     <v-card min-width="300">
                         <v-date-picker v-model="dateSelected"></v-date-picker>
                     </v-card>
                 </v-menu>
             </v-col>
-            <v-col cols="3"> <v-select :items="states" label="State"></v-select> </v-col>
+            <v-col cols="3"> <v-select :items="states" label="State" disabled></v-select> </v-col>
             <v-col cols="2">
-                <v-btn append-icon="mdi mdi-download" variant="outlined" base-color="green">
+                <v-btn append-icon="mdi mdi-download" variant="outlined" base-color="green" disabled>
                     Excel
                 </v-btn>
             </v-col>
         </v-row>
         <br>
         <v-card>
-            <v-data-table :headers="headersOrders" :items="orders" height="450" item-value="name"
-               >
+            <v-data-table :headers="headersOrders" :items="orders" height="450" item-value="name">
                 <template v-slot:item.actions="{ item }">
-                    <v-btn icon="mdi-delete" variant="text" @click="openWindow(item.correlative)" color="red" disabled>
+                    <v-btn icon="mdi-delete" variant="text" @click="dltOrder(item.id)" color="red">
                     </v-btn>
-                    </template>
+                </template>
+                <template v-slot:item.refillDate="{ item }">
+                    {{ proxy.$globalMethods.convertToUTC6(item.refillDate) }}
+                </template>
             </v-data-table>
         </v-card>
     </v-container>
 </template>
 
 <script lang="js">
-import { ref, computed, onMounted, inject } from "vue"
+import { ref, computed, onMounted, inject, getCurrentInstance } from "vue"
+import Swal from 'sweetalert2';
+import { useRouter } from 'vue-router';
+
 export default {
 
     setup() {
         const axios = inject('$axios')
+        const { proxy } = getCurrentInstance()
+        const router = useRouter();
+
         const states = ref([
             "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
             "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
@@ -79,23 +87,46 @@ export default {
             { title: 'Account', align: 'center', key: 'account' },
             { title: 'Full Name', align: 'center', key: 'fullName' },
             { title: 'Phone Assigned', align: 'center', key: 'virtualPhone' },
-            { title: 'Router', align: 'center', key: 'routerCorrelative'},
-            { title: 'Refill Date', align: 'center', key: 'refillDate'},
-            { title: 'Credit Card', align: 'center', key: 'creditCard' },
-            { title: 'Virtual Card', align: 'center', key: 'virtualCreditCard' },
+            { title: 'Xfinity User', align: 'center', key: 'xfinityUser' },
+            { title: 'Xfinity Password', align: 'center', key: 'xfinityPassword' },
+            { title: 'Refill Date', align: 'center', key: 'refillDate' },
+            { title: 'Tracking Number', align: 'center', key: 'trackingNum' },
+            { title: 'Shipment Status', align: 'center', key: 'shipmentStatus' },
             { title: 'Actions', align: 'center', key: 'actions' },
 
         ])
 
         const orders = ref([])
 
-        const getTotalOrder = async() => {
+        const getTotalOrder = async () => {
             await axios.get('/order/total').then(res => {
                 orders.value = res.data.data
             }).catch(err => {
 
             })
         }
+        const dltOrder = async (orderId) => {
+            await axios.put(`/order/${orderId}/delete`).then(res => {
+
+                Swal.fire({
+                    title: "Order deleted",
+                    text: res.data.msg,
+                    icon: "success",
+                    confirmButtonColor: "#3085d6",
+                    confirmButtonText: "OK",
+                    customClass: {
+                        confirmButton: 'custom-text-color-confirm',
+                    }
+                }).then((res) => {
+                    if (res.isConfirmed) {
+                        getTotalOrder()
+                    }
+                })
+            }).catch(err => {
+
+            })
+        }
+
 
         onMounted(() => {
             getTotalOrder()
@@ -108,10 +139,13 @@ export default {
             dateSelected,
             formattedRange,
             headersOrders,
-            orders, 
+            orders,
 
             onMounted,
-            getTotalOrder
+            getTotalOrder,
+
+            proxy,
+            dltOrder
         }
     }
 }

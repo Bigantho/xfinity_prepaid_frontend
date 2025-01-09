@@ -13,24 +13,24 @@ const axiosInstance = axios.create({
 // }
 
 // Interceptor de las peticiones, para validacion de permisos de acceso
-// axiosInstance.interceptors.request.use(
-//   async (config) => {
-//     const token = localStorage.getItem('authToken')
-//     if (config.url == '/auth/login') return config;
-//     if (app.config.globalProperties.$globalMethods.isTokenExpired(token)) {
-//       window.location.href = '/'
-//       return Promise.reject("The token expired.")
-//     }
+axiosInstance.interceptors.request.use(
+  async (config) => {
+    const token = localStorage.getItem('authToken')
+    if (config.url == '/auth/login') return config;
+    if (app.config.globalProperties.$globalMethods.isTokenExpired(token)) {
+      window.location.href = '/'
+      return Promise.reject("The token expired.")
+    }
 
-//     if (token) {
-//       config.headers['Authorization'] = `Bearer ${token}`
-//     }
-//     return config
-//   },
-//   (error) => {
-//     return Promise.reject(error)
-//   }
-// )
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`
+    }
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
 
 // Interceptor de respuestas (opcional, manejo de errores 401)
 // axiosInstance.interceptors.response.use(

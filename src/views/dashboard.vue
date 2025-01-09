@@ -26,12 +26,19 @@
                 <br>
                 <v-card>
                     <v-data-table :headers="headersPayments" :items="payments" height="200" item-value="name"
-                        hide-default-footer></v-data-table>
+                        hide-default-footer>
+                        <template v-slot:item.amount="{ item }">
+                            {{ `$${item.amount}` }}
+                        </template>
+                        <template v-slot:item.chargedAt="{ item }">
+                            {{ proxy.$globalMethods.convertToUTC6(item.chargedAt) }}
+                        </template>
+                    </v-data-table>
                 </v-card>
             </v-col>
             <v-col cols="6">
                 <h3 class="xp-title-table">Orders</h3>
-           <br>
+                <br>
                 <v-card>
                     <v-row class="ma-6" no-gutters>
                         <v-col cols="6">
@@ -57,9 +64,9 @@
                 <v-card>
                     <v-data-table :headers="headersRoutes" :items="routes" height="250" item-value="name"
                         hide-default-footer>
-                        <template v-slot:item.statusShipment="{ item }">
-                            <v-chip variant="tonal"  color="#447845" rounded>
-                             {{ item.statusShipment }}
+                        <template v-slot:item.shipped="{ item }">
+                            <v-chip variant="tonal" color="#447845" rounded>
+                                {{ item.statusShipment ? 'Enviado' : 'No enviado' }}
                             </v-chip>
                         </template>
 
@@ -91,15 +98,18 @@
 
 
 <script lang="js">
-import { ref, inject, onMounted } from 'vue'
+import { ref, inject, onMounted, getCurrentInstance } from 'vue'
 export default {
     setup() {
         const $axios = inject('$axios')
-        const n = ref('Anthony Vasquez')
+        const { proxy } = getCurrentInstance(); // Access `this` equivalent
+
         const headersPayments = ref([
             { title: 'Account', align: 'center', key: 'account' },
-            { title: 'Full Name', align: 'center', key: 'name' },
-            { title: 'Billing', align: 'center', key: 'billing' }
+            { title: 'Customer', align: 'center', key: 'customer' },
+            { title: 'Amount', align: 'center', key: 'amount' },
+            { title: 'Charged At', align: 'center', key: 'chargedAt' },
+
         ])
 
         const headersRoutes = ref([
@@ -112,42 +122,10 @@ export default {
 
 
         ])
-        const payments = ref([
-            {
-                account: 'AV898989',
-                name: "Anthony Vasquez",
-                billing: true
-            },
-            {
-                account: 'AV898989',
-                name: "Anthony Vasquez",
-                billing: true
-            },
-            {
-                account: 'AV898989',
-                name: "Anthony Vasquez",
-                billing: true
-            },
-            {
-                account: 'AV898989',
-                name: "Anthony Vasquez",
-                billing: true
-            },
-            {
-                account: 'AV898989',
-                name: "Anthony Vasquez",
-                billing: true
-            },
-            {
-                account: 'AV898989',
-                name: "Anthony Vasquez",
-                billing: true
-            }
-        ])
-
+        const payments = ref([])
         const routes = ref([])
 
-        const getRouter = async() =>{
+        const getRouter = async () => {
             await $axios.get('/router/shipped').then(res => {
                 routes.value = res.data.data
             }).catch(err => {
@@ -155,17 +133,32 @@ export default {
             })
         }
 
+        const getPayments = async () => {
+            // let td = '2025-01-03T18:35:43.000Z'
+            // const isTokenExpired = proxy.$globalMethods.convertToUTC6(td, false)
+            // console.log(isTokenExpired);
+
+            await $axios.get('/payment/total').then(res => {
+                payments.value = res.data.data
+            }).catch(err => {
+
+            })
+        }
+
         onMounted(() => {
             getRouter()
+            getPayments()
         })
 
         return {
             headersPayments,
             payments,
             headersRoutes,
-            routes, 
+            routes,
 
-            getRouter
+            getRouter,
+            getPayments,
+            proxy
         }
     }
 }

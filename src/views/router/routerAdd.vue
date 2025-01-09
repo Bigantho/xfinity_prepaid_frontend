@@ -70,12 +70,12 @@ export default {
 
         const $axios = inject('$axios')
 
-        const routerName = ref("Rou 1")
-        const routerBrand = ref("HP")
-        const routerSerial = ref("568956889644")
-        const routerMAC = ref("A8:T7:U1:E6")
-        const routerModel = ref("XTR50")
-        const routerYearSelected = ref("2001")
+        const routerName = ref("")
+        const routerBrand = ref("")
+        const routerSerial = ref("")
+        const routerMAC = ref("")
+        const routerModel = ref("")
+        const routerYearSelected = ref("")
         const routerCorrelativeNum = ref("")
         const routerCorrelative = ref("CUXPR")
 

@@ -16,7 +16,7 @@
 
             <v-row class="text-center">
                 <v-col cols="6">
-                    <v-select label="Select Customer" :items="customers" item-title="name" item-value="id"
+                    <v-select label="Select Customer" :items="customersFormatted" item-title="title" item-value="id"
                         v-model="orderCustomerSeleted">
                     </v-select>
                 </v-col>
@@ -35,6 +35,20 @@
                 </v-col>
                 <v-col cols="6">
                     <v-text-field v-model="orderXfinityPassword" label="Password Xfinity">
+                    </v-text-field>
+                </v-col>
+            </v-row>
+            <v-row class="text-center">
+                <v-col cols="6">
+
+                    <!-- <v-text-field v-model="orderXfinityUser" label="Xfinity User"> -->
+                    <!-- </v-text-field> -->
+
+                    <v-select :items="orderShippingCarrier" v-model="orderShippingCarrierSelected" label="Currier">
+                    </v-select>
+                </v-col>
+                <v-col cols="6">
+                    <v-text-field v-model="orderTrackingNum" label="Tracking Number">
                     </v-text-field>
                 </v-col>
             </v-row>
@@ -67,6 +81,8 @@
 
 <script>
 import { ref, inject, onMounted, computed } from 'vue'
+import Swal from 'sweetalert2';
+import { useRouter } from 'vue-router';
 
 
 export default {
@@ -75,16 +91,22 @@ export default {
         const routers = ref([])
         const customers = ref([])
 
+        const router = useRouter();
+
+
         const orderLabel = ref("")
         const orderXfinityUser = ref("")
         const orderXfinityPassword = ref("")
         const orderCustomerSeleted = ref("")
         const orderRouterSelected = ref("")
         const orderCorrelative = ref("")
-
+        const orderTotal = ref(0)
+        const orderShippingCarrier = ref(['UPS', 'FedEx', 'DHL'])
+        const orderShippingCarrierSelected = ref("")
+        const orderTrackingNum = ref("")
         const getRouters = async () => {
             await $axios.get('/router/total').then(res => {
-                routers.value = res.data.data
+                routers.value = res.data.data.filter((w) => w.hasOrder == false)
             }).catch(err => {
 
             })
@@ -98,6 +120,14 @@ export default {
             })
         }
 
+        const getOrders = async () => {
+            await $axios.get('/order/total').then(res => {
+                orderTotal.value = res.data.data.length
+            }).catch(err => {
+
+            })
+        }
+
         const saveOrder = async () => {
             const data = {
                 id_customer: orderCustomerSeleted.value,
@@ -106,17 +136,45 @@ export default {
                 xfinity_password: orderXfinityPassword.value,
                 account: orderCorrelative.value,
                 refill_payment_date: refillDate.value,
+                shipping_carrier: orderShippingCarrierSelected.value, 
+                tracking_num: orderTrackingNum.value
             }
             await $axios.post('/order/place', data).then(res => {
-
+                generateCorrelative()
+                Swal.fire({
+                    title: "Order placed!",
+                    text: res.data.msg,
+                    icon: "success",
+                    confirmButtonColor: "#3085d6",
+                    confirmButtonText: "OK",
+                    customClass: {
+                        confirmButton: 'custom-text-color-confirm',
+                    }
+                }).then((res) => {
+                    if (res.isConfirmed) {
+                        router.push({ name: 'orderTotal' })
+                    }
+                })
             }).catch(err => {
-
+                Swal.fire({
+                    title: "Something went wrong!",
+                    text: err.response.data.msg,
+                    icon: "warning",
+                    confirmButtonColor: "#3085d6",
+                    confirmButtonText: "OK",
+                    customClass: {
+                        confirmButton: 'custom-text-color-confirm',
+                    }
+                })
             })
         }
-        const generateCorrelative = () => {
-            const currentYear = new Date().getFullYear();
-            const randomFiveDigits = Math.floor(10000 + Math.random() * 90000); // Ensures a 5-digit number
-            orderCorrelative.value = `CSXP${currentYear}${randomFiveDigits}`;
+        const generateCorrelative = async () => {
+            // const currentYear = new Date().getFullYear();
+            // const randomFiveDigits = Math.floor(10000 + Math.random() * 90000); // Ensures a 5-digit number
+            await getOrders();
+            const correlativeNumber = (orderTotal.value + 1).toString().padStart(10, '0');
+            // routerCorrelativeNum.value = correlativeNumber
+            orderCorrelative.value = `CSXP-${correlativeNumber}`;
         }
 
         const menu = ref(false)
@@ -132,7 +190,12 @@ export default {
             return '';
         });
 
-
+        const customersFormatted = computed(() =>             
+            customers.value.map((e) => ({
+                ...e,
+                title: `${e.name} - ${e.email}`
+            }))
+        )
         onMounted(() => {
             getRouters()
             getCustomers()
@@ -158,6 +221,14 @@ export default {
             menu,
             refillDate,
             formattedRange,
+            getOrders,
+            orderTotal, 
+
+            orderShippingCarrierSelected,
+            orderShippingCarrier,
+            orderTrackingNum,
+
+            customersFormatted
 
         }
     }

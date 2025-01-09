@@ -45,7 +45,7 @@
 <script>
 import { ref, inject, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-// import Swal from 'sweetalert2';
+import Swal from 'sweetalert2';
 
 export default {
     name: 'Login',
@@ -92,18 +92,16 @@ export default {
         ])
         const checkLogin = async () => {
             try {
-                router.push({ name: 'dashboard' })
-                return;
                 if (user.value == "" || password.value == "") {
-                    // Swal.fire({
-                    //     title: "Debes completar todos los campos",
-                    //     icon: "warning",
-                    //     confirmButtonColor: "#3085d6",
-                    //     confirmButtonText: "OK",
-                    //     customClass: {
-                    //         confirmButton: 'custom-text-color-confirm',
-                    //     }
-                    // }).then(() => { })
+                    Swal.fire({
+                        title: "Debes completar todos los campos",
+                        icon: "warning",
+                        confirmButtonColor: "#3085d6",
+                        confirmButtonText: "OK",
+                        customClass: {
+                            confirmButton: 'custom-text-color-confirm',
+                        }
+                    }).then(() => { })
 
                 } else {
                     const response = await axios.post("/auth/login", {
@@ -115,29 +113,29 @@ export default {
                         localStorage.setItem('authToken', response.data.data.token)
                         router.push({ name: 'dashboard' })
                     } else {
-                        // Swal.fire({
-                        //     title: "Debes completar todos los campos",
-                        //     text: response.data.msg,
-                        //     icon: "warning",
-                        //     confirmButtonColor: "#3085d6",
-                        //     confirmButtonText: "OK",
-                        //     customClass: {
-                        //         confirmButton: 'custom-text-color-confirm',
-                        //     }
-                        // })
+                        Swal.fire({
+                            title: "Debes completar todos los campos",
+                            text: response.data.msg,
+                            icon: "warning",
+                            confirmButtonColor: "#3085d6",
+                            confirmButtonText: "OK",
+                            customClass: {
+                                confirmButton: 'custom-text-color-confirm',
+                            }
+                        })
                     }
                 }
             } catch (error) {
-                // Swal.fire({
-                //     title: "Credenciales incorrectas.",
-                //     text: error.response.data.error,
-                //     icon: "warning",
-                //     confirmButtonColor: "#3085d6",
-                //     confirmButtonText: "OK",
-                //     customClass: {
-                //         confirmButton: 'custom-text-color-confirm',
-                //     }
-                // })
+                Swal.fire({
+                    title: "Credenciales incorrectas.",
+                    text: error.response.data.error,
+                    icon: "warning",
+                    confirmButtonColor: "#3085d6",
+                    confirmButtonText: "OK",
+                    customClass: {
+                        confirmButton: 'custom-text-color-confirm',
+                    }
+                })
             }
         }
         return {

@@ -16,16 +16,16 @@
                 <v-menu v-model="menu" :close-on-content-click="false" location="end">
                     <template v-slot:activator="{ props }">
                         <v-text-field append-inner-icon="mdi mdi-calendar" label="Creation Date" v-bind="props"
-                            v-model="formattedRange" variant="outlined"></v-text-field>
+                            v-model="formattedRange" variant="outlined" disabled></v-text-field>
                     </template>
                     <v-card min-width="300">
                         <v-date-picker v-model="dateSelected"></v-date-picker>
                     </v-card>
                 </v-menu>
             </v-col>
-            <v-col cols="3"> <v-select :items="states" label="State"></v-select> </v-col>
+            <v-col cols="3"> <v-select :items="states" label="State" disabled></v-select> </v-col>
             <v-col cols="2">
-                <v-btn append-icon="mdi mdi-download" variant="outlined" base-color="green">
+                <v-btn append-icon="mdi mdi-download" variant="outlined" base-color="green" disabled>
                     Excel
                 </v-btn>
             </v-col>
@@ -42,13 +42,17 @@
                     <v-btn icon="mdi-printer-outline" variant="text" @click="openWindow(item.correlative)">
                     </v-btn>
                 </template>
+
+                <template v-slot:item.createdAt="{ item }">
+                    {{ proxy.$globalMethods.convertToUTC6(item.createdAt) }}
+                </template>
             </v-data-table>
         </v-card>
     </v-container>
 </template>
 
 <script lang="js">
-import { ref, computed, inject, onMounted } from "vue"
+import { ref, computed, inject, onMounted ,getCurrentInstance} from "vue"
 import { useRouter } from "vue-router";
 import html2canvas from "html2canvas";
 export default {
@@ -56,6 +60,7 @@ export default {
     setup() {
         const axios = inject('$axios')
         const $router = useRouter()
+        const { proxy } = getCurrentInstance()
         const states = ref([
             "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
             "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
@@ -125,7 +130,7 @@ export default {
             getRouters,
 
             openWindow,
-
+            proxy
         }
     }
 }

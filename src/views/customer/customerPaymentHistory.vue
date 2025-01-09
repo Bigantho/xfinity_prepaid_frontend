@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <h1 class="text-center">Customer History</h1>
+        <h1 class="text-center">Customer History (test)</h1>
         <br>
         <v-row>
             <v-col cols="1"></v-col>

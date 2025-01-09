@@ -3,14 +3,14 @@
         <v-card class="pa-5 text-center">
             <h1>Add Virtual Phone</h1>
             <br>
-            <v-row>
+            <v-row v-show="false">
                 <v-col cols="6">
-                    <v-select :items="states" label="States">
+                    <v-select :items="states" label="States" >
 
                     </v-select>
                 </v-col>
                 <v-col cols="6">
-                    <v-select :items="areaCodes" label="Area Code">
+                    <v-select :items="areaCodes" label="Area Code"  hidden="true">
 
                     </v-select>
 
@@ -36,6 +36,8 @@
 <script lang="js">
 import { ref, inject } from 'vue'
 import { useRouter } from 'vue-router';
+import Swal from 'sweetalert2';
+
 export default {
 
     setup() {
@@ -62,18 +64,46 @@ export default {
         ])
 
         const saveVirtualPhone = async () => {
+            const customerId = localStorage.getItem('customerId')
 
             const phoneNumberObj = {
                 number: phoneNumber.value,
-                acquired_by: "1"
+                // acquired_by: "1"
+                id_customer: customerId
+
             }
 
             await axios.post('/virtual_phone_number/create', phoneNumberObj).then(res => {
-                $router.push({ name: 'dashboard' })
+                Swal.fire({
+                    title: "Virtual Phone Added!",
+                    text: res.data.msg,
+                    icon: "success",
+                    confirmButtonColor: "#3085d6",
+                    confirmButtonText: "OK",
+                    customClass: {
+                        confirmButton: 'custom-text-color-confirm',
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire("Customer Created Successfully!", "", "success").then((res) => {
+                            if (res.isConfirmed) {
+                                $router.push({ name: 'customerTotal' })
+                            }
+                        });
+
+                    }
+                })
             }).catch(err => {
-                console.log(err);
-                
-                alert("Something went wrong!", err)
+                Swal.fire({
+                    title: "Something went wrong!",
+                    text: err.response.data.msg,
+                    icon: "warning",
+                    confirmButtonColor: "#3085d6",
+                    confirmButtonText: "OK",
+                    customClass: {
+                        confirmButton: 'custom-text-color-confirm',
+                    }
+                })
             })
         }
 
