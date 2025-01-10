@@ -31,7 +31,7 @@
                     </v-text-field>
                 </v-col>
                 <v-col cols="6">
-                    <v-text-field label="MAC Address" v-model="routerMAC">
+                    <v-text-field label="MAC Address" v-model="routerMAC" placeholder="XX:XX:XX:XX:XX:XX">
 
                     </v-text-field>
                 </v-col>
