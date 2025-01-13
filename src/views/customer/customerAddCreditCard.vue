@@ -58,7 +58,30 @@
                 </v-col>
             </v-row>
             <br>
-
+            <h2 class="xp-title-table">Billing Address</h2>
+            <br>
+            <v-row>
+                <v-col cols="4">
+                    <v-select label="State" :items="states" variant="outlined" v-model="billingStateSelected"></v-select>
+                </v-col>
+                <v-col cols="4">
+                    <v-text-field label="City" variant="outlined" v-model="billingCity"></v-text-field>
+                </v-col>
+                <v-col cols="4">
+                    <v-text-field label="Zipcode" variant="outlined" v-model="billingZipcode"></v-text-field>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="4">
+                    <v-text-field label="Address Street 1" variant="outlined" v-model="billingAddress1"></v-text-field>
+                </v-col>
+                <v-col cols="4">
+                    <v-text-field label="Address Street 2" variant="outlined" v-model="billingAddress2"></v-text-field>
+                </v-col>
+                <v-col cols="4">
+                    <v-select label="Country" :items="['USA']" v-model="billingCountrySelected" disabled></v-select>
+                </v-col>
+            </v-row>
 
             <v-row>
                 <v-col cols="12" class="text-center">
@@ -91,6 +114,13 @@ export default {
         const cdtCardCVV = ref("")
         const cdtCardTypesSelected = ref("")
 
+        const billingStateSelected = ref("")
+        const billingCity = ref("")
+        const billingZipcode = ref("")
+        const billingAddress1 = ref("")
+        const billingAddress2 = ref("")
+        const billingCountrySelected = ref("USA")
+
         const saveCreditCard = async () => {
             const customerId = localStorage.getItem('customerId')
 
@@ -102,7 +132,15 @@ export default {
                 exp_date: cdtCardExpDate.value,
                 active: "1",
                 is_deleted: "0",
-                id_customer: customerId
+                id_customer: customerId,
+                billing_address_country: billingCountrySelected.value,
+                billing_address_street: billingAddress1.value ,
+                billing_address_street_2: billingAddress2.value,
+                billing_address_house: "",
+                billing_address_state:billingStateSelected.value ,
+                billing_address_city:  billingCity.value,
+                billign_address_zipcode:billingZipcode.value ,
+
             }
 
             await axios.post('/credit_card/create', cdtCardObj).then(res => {
@@ -144,7 +182,14 @@ export default {
             cdtCardHolder,
             cdtCardExpDate,
             cdtCardTypesSelected,
-            cdtCardCVV
+            cdtCardCVV,
+
+            billingState,
+            billingCity,
+            billingZipcode,
+            billingAddress1,
+            billingAddress2,
+            billingCountrySelected
         }
     }
 

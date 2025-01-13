@@ -65,6 +65,30 @@
                     </v-menu>
                 </v-col>
             </v-row>
+            <h2 class="xp-title-table">Activation Address</h2>
+            <br>
+            <v-row>
+                <v-col cols="4">
+                    <v-select label="State" :items="states" variant="outlined" v-model="activationState"></v-select>
+                </v-col>
+                <v-col cols="4">
+                    <v-text-field label="City" variant="outlined" v-model="activationCity"></v-text-field>
+                </v-col>
+                <v-col cols="4">
+                    <v-text-field label="Zipcode" variant="outlined" v-model="activationZipcode"></v-text-field>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="4">
+                    <v-text-field label="Address Street 1" variant="outlined" v-model="activationAddress1"></v-text-field>
+                </v-col>
+                <v-col cols="4">
+                    <v-text-field label="Address Street 2" variant="outlined" v-model="activationAddress2"></v-text-field>
+                </v-col>
+                <v-col cols="4">
+                    <v-select label="Country" :items="['USA']" v-model="activationCountrySelected" disabled></v-select>
+                </v-col>
+            </v-row>
             <v-row class="text-center">
                 <v-col cols="12" class="text-center">
                     <v-btn prepend-icon="mdi-content-save" color="primary" @click="saveOrder">
@@ -104,6 +128,25 @@ export default {
         const orderShippingCarrier = ref(['UPS', 'FedEx', 'DHL'])
         const orderShippingCarrierSelected = ref("")
         const orderTrackingNum = ref("")
+
+        const states = ref([
+            "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
+            "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
+            "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana",
+            "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota",
+            "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire",
+            "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota",
+            "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island",
+            "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont",
+            "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
+        ])
+        const billingState = ref("")
+        const billingCity = ref("")
+        const billingZipcode = ref("")
+        const billingAddress1 = ref("")
+        const billingAddress2 = ref("")
+        const billingCountrySelected = ref("USA")
+
         const getRouters = async () => {
             await $axios.get('/router/total').then(res => {
                 routers.value = res.data.data.filter((w) => w.hasOrder == false)
@@ -136,8 +179,14 @@ export default {
                 xfinity_password: orderXfinityPassword.value,
                 account: orderCorrelative.value,
                 refill_payment_date: refillDate.value,
-                shipping_carrier: orderShippingCarrierSelected.value, 
-                tracking_num: orderTrackingNum.value
+                shipping_carrier: orderShippingCarrierSelected.value,
+                tracking_num: orderTrackingNum.value,
+                activation_address_state:  activationState.value,
+                activation_address_city: activationCity.value,
+                activation_address_zipcode: activationZipcode.value,
+                activation_address_street: activationAddress1.value,
+                activation_address_street_2: activationAddress2.value,
+                activation_address_country: activationCountrySelected.value,
             }
             await $axios.post('/order/place', data).then(res => {
                 generateCorrelative()
@@ -190,7 +239,7 @@ export default {
             return '';
         });
 
-        const customersFormatted = computed(() =>             
+        const customersFormatted = computed(() =>
             customers.value.map((e) => ({
                 ...e,
                 title: `${e.name} - ${e.email}`
@@ -222,13 +271,21 @@ export default {
             refillDate,
             formattedRange,
             getOrders,
-            orderTotal, 
+            orderTotal,
 
             orderShippingCarrierSelected,
             orderShippingCarrier,
             orderTrackingNum,
 
-            customersFormatted
+            customersFormatted,
+
+            billingState,
+            billingCity,
+            billingZipcode,
+            billingAddress1,
+            billingAddress2,
+            billingCountrySelected,
+            states
 
         }
     }
