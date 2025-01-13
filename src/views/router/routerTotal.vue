@@ -92,7 +92,7 @@ export default {
             { title: 'Name', align: 'center', key: 'name' },
             { title: 'Correlative', align: 'center', key: 'correlative' },
             { title: 'Creation Date', align: 'center', key: 'createdAt' },
-            { title: 'Brand', align: 'center', key: 'brand' },
+            // { title: 'Brand', align: 'center', key: 'brand' },
             { title: 'MAC', align: 'center', key: 'macAddress' },
             { title: 'Shipment', align: 'center', key: 'wasShipped' },
             { title: 'Actions', align: 'center', key: 'actions' }

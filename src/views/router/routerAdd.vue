@@ -19,17 +19,14 @@
                     </v-text-field>
                 </v-col>
                 <v-col cols="6">
-                    <v-text-field label="Brand" v-model="routerBrand">
-
+                    <v-text-field label="Serial" v-model="routerSerial">
                     </v-text-field>
+                    <!-- <v-text-field label="Brand" v-model="routerBrand">
+                    </v-text-field> -->
                 </v-col>
             </v-row>
             <v-row>
-                <v-col cols="6">
-                    <v-text-field label="Serial" v-model="routerSerial">
-
-                    </v-text-field>
-                </v-col>
+              
                 <v-col cols="6">
                     <v-text-field label="MAC Address" v-model="routerMAC" placeholder="XX:XX:XX:XX:XX:XX">
                     </v-text-field>
@@ -37,12 +34,11 @@
             </v-row>
             <v-row>
                 <v-col cols="6">
-                    <v-text-field label="Model" v-model="routerModel">
-
-                    </v-text-field>
+                    <!-- <v-text-field label="Model" v-model="routerModel">
+                    </v-text-field> -->
                 </v-col>
                 <v-col cols="6">
-                    <v-select :items="years" v-model="routerYearSelected" label="Year"></v-select>
+                    <!-- <v-select :items="years" v-model="routerYearSelected" label="Year"></v-select> -->
                 </v-col>
             </v-row>
 
@@ -70,11 +66,11 @@ export default {
         const $axios = inject('$axios')
 
         const routerName = ref("")
-        const routerBrand = ref("")
+        // const routerBrand = ref("")
         const routerSerial = ref("")
         const routerMAC = ref("")
-        const routerModel = ref("")
-        const routerYearSelected = ref("")
+        // const routerModel = ref("")
+        // const routerYearSelected = ref("")
         const routerCorrelativeNum = ref("")
         const routerCorrelative = ref("CUXPR")
 
@@ -95,10 +91,10 @@ export default {
             const data = {
                 mac_address: routerMAC.value,
                 name: routerName.value,
-                brand: routerBrand.value,
+                // brand: routerBrand.value,
                 serial: routerSerial.value,
-                model: routerModel.value,
-                year: routerYearSelected.value,
+                // model: routerModel.value,
+                // year: routerYearSelected.value,
                 correlative: `${routerCorrelative.value}-${routerCorrelativeNum.value}`,
                 is_deleted: "0",
                 active: "1",
@@ -133,11 +129,11 @@ export default {
 
         const clearFields = () => {
             routerName.value = ""
-            routerBrand.value = ""
+            // routerBrand.value = ""
             routerSerial.value = ""
             routerMAC.value = ""
-            routerModel.value = ""
-            routerYearSelected.value = ""
+            // routerModel.value = ""
+            // routerYearSelected.value = ""
 
         }
 
@@ -148,11 +144,11 @@ export default {
         return {
             years,
             routerName,
-            routerBrand,
+            // routerBrand,
             routerSerial,
             routerMAC,
-            routerModel,
-            routerYearSelected,
+            // routerModel,
+            // routerYearSelected,
             routerCorrelative,
             routerCorrelativeNum,
 

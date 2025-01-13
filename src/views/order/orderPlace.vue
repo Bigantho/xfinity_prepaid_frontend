@@ -21,7 +21,7 @@
                     </v-select>
                 </v-col>
                 <v-col cols="6">
-                    <v-select label="Select Router" :items="routers" item-title="name" item-value="id"
+                    <v-select label="Select Router" :items="routersFormatted" item-title="title" item-value="id"
                         v-model="orderRouterSelected">
                     </v-select>
                 </v-col>
@@ -245,6 +245,13 @@ export default {
                 title: `${e.name} - ${e.email}`
             }))
         )
+
+        const routersFormatted = computed(() =>             
+        routers.value.map((e) => ({
+                ...e,
+                title: `${e.name} - ${e.serial}`
+            }))
+        )
         onMounted(() => {
             getRouters()
             getCustomers()
@@ -278,6 +285,7 @@ export default {
             orderTrackingNum,
 
             customersFormatted,
+<<<<<<< HEAD
 
             billingState,
             billingCity,
@@ -286,6 +294,9 @@ export default {
             billingAddress2,
             billingCountrySelected,
             states
+=======
+            routersFormatted
+>>>>>>> main
 
         }
     }
