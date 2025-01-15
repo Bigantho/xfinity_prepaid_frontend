@@ -7,8 +7,13 @@
                         @click="$router.push({ name: 'orderTotal' })">
                     </v-btn>
                 </v-col>
-                <v-col cols="3" offset="3" class="text-end">
-                    <v-text-field label="Correlative" v-model="orderCorrelative" readonly>
+                <v-col cols="1" offset="2" class="text-right">
+                    <v-btn icon="mdi mdi-printer-outline"  @click="openWindow()">
+
+                    </v-btn>
+                </v-col>
+                <v-col cols="3"  class="text-end">
+                    <v-text-field label="Correlative" v-model="routerCorrelative" readonly>
                     </v-text-field>
                 </v-col>
             </v-row>
@@ -22,7 +27,7 @@
                 </v-col>
                 <v-col cols="6">
                     <v-select label="Select Router" :items="routersFormatted" item-title="title" item-value="id"
-                        v-model="orderRouterSelected">
+                        v-model="orderRouterSelected" return-object>
                     </v-select>
                 </v-col>
             </v-row>
@@ -80,10 +85,12 @@
             </v-row>
             <v-row>
                 <v-col cols="4">
-                    <v-text-field label="Address Street 1" variant="outlined" v-model="activationAddress1"></v-text-field>
+                    <v-text-field label="Address Street 1" variant="outlined"
+                        v-model="activationAddress1"></v-text-field>
                 </v-col>
                 <v-col cols="4">
-                    <v-text-field label="Address Street 2" variant="outlined" v-model="activationAddress2"></v-text-field>
+                    <v-text-field label="Address Street 2" variant="outlined"
+                        v-model="activationAddress2"></v-text-field>
                 </v-col>
                 <v-col cols="4">
                     <v-select label="Country" :items="['USA']" v-model="activationCountrySelected" disabled></v-select>
@@ -140,12 +147,12 @@ export default {
             "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont",
             "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
         ])
-        const billingState = ref("")
-        const billingCity = ref("")
-        const billingZipcode = ref("")
-        const billingAddress1 = ref("")
-        const billingAddress2 = ref("")
-        const billingCountrySelected = ref("USA")
+        const activationState = ref("")
+        const activationCity = ref("")
+        const activationZipcode = ref("")
+        const activationAddress1 = ref("")
+        const activationAddress2 = ref("")
+        const activationCountrySelected = ref("USA")
 
         const getRouters = async () => {
             await $axios.get('/router/total').then(res => {
@@ -181,7 +188,7 @@ export default {
                 refill_payment_date: refillDate.value,
                 shipping_carrier: orderShippingCarrierSelected.value,
                 tracking_num: orderTrackingNum.value,
-                activation_address_state:  activationState.value,
+                activation_address_state: activationState.value,
                 activation_address_city: activationCity.value,
                 activation_address_zipcode: activationZipcode.value,
                 activation_address_street: activationAddress1.value,
@@ -217,6 +224,7 @@ export default {
                 })
             })
         }
+
         const generateCorrelative = async () => {
             // const currentYear = new Date().getFullYear();
             // const randomFiveDigits = Math.floor(10000 + Math.random() * 90000); // Ensures a 5-digit number
@@ -225,6 +233,10 @@ export default {
             // routerCorrelativeNum.value = correlativeNumber
             orderCorrelative.value = `CSXP-${correlativeNumber}`;
         }
+
+        const routerCorrelative = computed(() => {
+            return orderRouterSelected.value.correlative
+        })
 
         const menu = ref(false)
         const refillDate = ref(null)
@@ -246,12 +258,17 @@ export default {
             }))
         )
 
-        const routersFormatted = computed(() =>             
-        routers.value.map((e) => ({
+        const routersFormatted = computed(() =>
+            routers.value.map((e) => ({
                 ...e,
                 title: `${e.name} - ${e.serial}`
             }))
         )
+
+        const openWindow = async () => {
+            const url = router.resolve({ name: 'orderPrintLabel', params: { id_router: orderRouterSelected.value.correlative } }).href
+            window.open(url, '_blank')
+        }
         onMounted(() => {
             getRouters()
             getCustomers()
@@ -285,18 +302,20 @@ export default {
             orderTrackingNum,
 
             customersFormatted,
-<<<<<<< HEAD
 
-            billingState,
-            billingCity,
-            billingZipcode,
-            billingAddress1,
-            billingAddress2,
-            billingCountrySelected,
-            states
-=======
-            routersFormatted
->>>>>>> main
+
+            activationState,
+            activationCity,
+            activationZipcode,
+            activationAddress1,
+            activationAddress2,
+            activationCountrySelected,
+            states,
+            routersFormatted,
+
+            routerCorrelative,
+
+            openWindow
 
         }
     }

@@ -32,8 +32,16 @@
         <v-card>
             <v-data-table :headers="headersOrders" :items="orders" height="450" item-value="name">
                 <template v-slot:item.actions="{ item }">
-                    <v-btn icon="mdi-delete" variant="text" @click="dltOrder(item.id)" color="red">
-                    </v-btn>
+                    <v-row>
+                        <v-col   cols="6" > <v-btn icon="mdi-delete" variant="text" @click="dltOrder(item.id)" color="red">
+                            </v-btn></v-col>
+                        <v-col cols="6"><v-btn icon="mdi-printer-outline" variant="text"
+                                @click="openWindow(item.routerCorrelative)">
+                            </v-btn></v-col>
+
+
+                    </v-row>
+
                 </template>
                 <template v-slot:item.refillDate="{ item }">
                     {{ proxy.$globalMethods.convertToUTC6(item.refillDate) }}
@@ -53,7 +61,7 @@ export default {
     setup() {
         const axios = inject('$axios')
         const { proxy } = getCurrentInstance()
-        const router = useRouter();
+        const $router = useRouter();
 
         const states = ref([
             "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
@@ -127,6 +135,10 @@ export default {
             })
         }
 
+        const openWindow = async (correlative) => {
+            const url = $router.resolve({ name: 'orderPrintLabel', params: { id_router: correlative } }).href
+            window.open(url, '_blank')
+        }
 
         onMounted(() => {
             getTotalOrder()
@@ -145,7 +157,7 @@ export default {
             getTotalOrder,
 
             proxy,
-            dltOrder
+            dltOrder, openWindow
         }
     }
 }
