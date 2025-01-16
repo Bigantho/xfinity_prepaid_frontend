@@ -4,18 +4,18 @@
             <v-col cols="6" class="text-center"> </v-col>
         </v-row> -->
         <v-row>
-            <v-col cols="6"  class="text-center">
-                <h1 class="text-start">Label to download</h1>
+            <v-col cols="6" class="text-center">
+                <!-- <h1 class="text-start">Label to download</h1> -->
                 <div class="center-container text-center" ref="captureArea">
-                    <div class="text-center xp-border-print" >
+                    <div class="text-center xp-border-print">
                         <h3>INTERNET SERVICE SUPPORT</h3>
                         <h2> <v-icon icon="mdi-phone"></v-icon> <strong> (888) 409-3273
                             </strong> </h2>
-                        <h3>{{ routerId }}</h3>
+                        <h3>{{ props.routeCorrelative }}</h3>
                     </div>
                 </div>
             </v-col>
-            <v-col cols="6"  class="text-center">
+            <!-- <v-col cols="6" class="text-center">
                 <v-btn prepend-icon="mdi mdi-camera-outline" class="mr-3" base-color="#4D87E2" @click="generateImg">
                     Capture Label
                 </v-btn>
@@ -27,12 +27,12 @@
                     <h2>Captured Label:</h2>
                     <img :src="capturedImage" style="width: 4in; height: 2in;" alt="Captured Content" />
                 </div>
-            </v-col>
+            </v-col> -->
         </v-row>
         <br>
         <br><br>
         <v-row>
-         
+
         </v-row>
     </v-container>
 </template>
@@ -62,17 +62,21 @@
 <script lang="js">
 import { useRoute } from 'vue-router';
 import html2canvas from 'html2canvas';
-import { ref } from 'vue'
+import { ref, defineProps } from 'vue'
 export default {
-    setup() {
+    props: {
+        routeCorrelative: {
+            type: String,
+            default: ''
+        }
+    },
+    setup(props) {
         const $route = useRoute()
-        const routerId = $route.params.id_router
+        // const routerId = $route.params.id_router
 
         const captureArea = ref(null);
         const capturedImage = ref(null);
         const generateImg = async () => {
-            console.log(captureArea.value);
-
             if (captureArea.value) {
                 try {
                     const canvas = await html2canvas(captureArea.value);
@@ -87,19 +91,18 @@ export default {
             if (capturedImage.value) {
                 const link = document.createElement("a");
                 link.href = capturedImage.value;
-                link.download = `Label-${routerId}.png`; // Set the default filename
+                link.download = `Label-${props.routeCorrelative}.png`; // Set the default filename
                 link.click();
             }
         };
 
-
-
         return {
-            routerId,
+            // routeCorrelative,
             captureArea,
             capturedImage,
             generateImg,
-            downloadImage
+            downloadImage,
+            props
         }
     }
 }

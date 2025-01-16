@@ -14,8 +14,7 @@
             <br>
             <v-row>
                 <v-col cols="6">
-                    <v-text-field label="Name" v-model="routerName">
-
+                    <v-text-field label="Name" v-model="routerName" readonly>
                     </v-text-field>
                 </v-col>
                 <v-col cols="6">
@@ -26,9 +25,10 @@
                 </v-col>
             </v-row>
             <v-row>
-              
+
                 <v-col cols="6">
-                    <v-text-field label="MAC Address" v-model="routerMAC" placeholder="XX:XX:XX:XX:XX:XX">
+
+                    <v-text-field label="MAC Address" v-model="formattedMac" placeholder="XX:XX:XX:XX:XX:XX" maxlength="17"  counter>
                     </v-text-field>
                 </v-col>
             </v-row>
@@ -55,7 +55,7 @@
 </template>
 
 <script lang="js">
-import { ref, inject, onMounted } from "vue"
+import { ref, inject, onMounted, computed, watch } from "vue"
 import { useRouter } from 'vue-router';
 
 export default {
@@ -75,7 +75,7 @@ export default {
         const routerCorrelative = ref("CUXPR")
 
         const totalRouters = ref(0)
-
+        const formattedMac = ref('')
         const years = ref([
             "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009",
             "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019",
@@ -100,7 +100,7 @@ export default {
                 active: "1",
             }
             await $axios.post('/router/create', data).then(res => {
-                openWindow()
+                // openWindow()
                 generateCorrelative()
                 clearFields()
             }).catch(err => {
@@ -118,6 +118,8 @@ export default {
 
         const generateCorrelative = async () => {
             await getRouters()
+            let correlativeNameRouter = (totalRouters.value + 1).toString().padStart(3, '0')
+            routerName.value = `XFIN${correlativeNameRouter}`
             const correlativeNumber = (totalRouters.value + 1).toString().padStart(10, '0');
             routerCorrelativeNum.value = correlativeNumber
         }
@@ -132,13 +134,28 @@ export default {
             // routerBrand.value = ""
             routerSerial.value = ""
             routerMAC.value = ""
+            formattedMac.value = ""
             // routerModel.value = ""
             // routerYearSelected.value = ""
 
         }
 
+        watch(formattedMac, (nuevoValor, valorAntiguo) => {
+            const limpio = nuevoValor.replace(/:/g, '');
+
+            const grupos = limpio.match(/.{1,2}/g) || [];
+
+            const formateado = grupos.join(':');
+
+            if (formateado !== nuevoValor) {
+                formattedMac.value = formateado;
+            }
+        })
+
+
         onMounted(() => {
             generateCorrelative()
+
         })
 
         return {
@@ -156,7 +173,9 @@ export default {
             totalRouters,
 
             openWindow,
-            clearFields
+            clearFields,
+            formattedMac,
+            // formattedMacComputed
         }
     }
 }

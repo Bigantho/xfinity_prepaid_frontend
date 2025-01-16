@@ -7,8 +7,16 @@
                         @click="$router.push({ name: 'orderTotal' })">
                     </v-btn>
                 </v-col>
-                <v-col cols="3" offset="3" class="text-end">
-                    <v-text-field label="Correlative" v-model="orderCorrelative" readonly>
+                <v-col cols="1" offset="2" class="text-right">
+                    <VueToPrint :content="labelRef" document-title="AwesomeFileName" remove-after-print>
+                        <template #trigger>
+                            <v-btn icon="mdi mdi-printer-outline" variant="outlined" :disabled="showBtnPrint">
+                            </v-btn>
+                        </template>
+                    </VueToPrint>
+                </v-col>
+                <v-col cols="3" class="text-end">
+                    <v-text-field label="Correlative" v-model="routerCorrelative" readonly>
                     </v-text-field>
                 </v-col>
             </v-row>
@@ -22,7 +30,7 @@
                 </v-col>
                 <v-col cols="6">
                     <v-select label="Select Router" :items="routersFormatted" item-title="title" item-value="id"
-                        v-model="orderRouterSelected">
+                        v-model="orderRouterSelected" return-object>
                     </v-select>
                 </v-col>
             </v-row>
@@ -65,6 +73,32 @@
                     </v-menu>
                 </v-col>
             </v-row>
+            <h2 class="xp-title-table">Activation Address</h2>
+            <br>
+            <v-row>
+                <v-col cols="4">
+                    <v-select label="State" :items="states" variant="outlined" v-model="activationState"></v-select>
+                </v-col>
+                <v-col cols="4">
+                    <v-text-field label="City" variant="outlined" v-model="activationCity"></v-text-field>
+                </v-col>
+                <v-col cols="4">
+                    <v-text-field label="Zipcode" variant="outlined" v-model="activationZipcode"></v-text-field>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="4">
+                    <v-text-field label="Address Street 1" variant="outlined"
+                        v-model="activationAddress1"></v-text-field>
+                </v-col>
+                <v-col cols="4">
+                    <v-text-field label="Address Street 2" variant="outlined"
+                        v-model="activationAddress2"></v-text-field>
+                </v-col>
+                <v-col cols="4">
+                    <v-select label="Country" :items="['USA']" v-model="activationCountrySelected" disabled></v-select>
+                </v-col>
+            </v-row>
             <v-row class="text-center">
                 <v-col cols="12" class="text-center">
                     <v-btn prepend-icon="mdi-content-save" color="primary" @click="saveOrder">
@@ -73,24 +107,43 @@
                 </v-col>
             </v-row>
         </v-card>
+        <orderPrintLabel ref="labelRef" :routeCorrelative="routerCorrelative" class="hide-printable-label" />
     </v-container>
 </template>
 
 
-<style scoped></style>
+<style scoped>
+@media screen {
+    .hide-printable-label {
+        display: none;
+    }
+}
+
+@media print {
+    .hide-printable-label {
+        display: block !important;
+    }
+}
+</style>
 
 <script>
-import { ref, inject, onMounted, computed } from 'vue'
+import { ref, inject, onMounted, computed, watch } from 'vue'
 import Swal from 'sweetalert2';
 import { useRouter } from 'vue-router';
-
-
+import orderPrintLabel from '@/views/order/orderPrintLabel.vue'
+import { VueToPrint } from 'vue-to-print';
 export default {
+
+    components: {
+        orderPrintLabel,
+        VueToPrint
+    },
     setup() {
+        const labelRef = ref()
+        const showBtnPrint = ref(true)
         const $axios = inject('$axios')
         const routers = ref([])
         const customers = ref([])
-
         const router = useRouter();
 
 
@@ -104,6 +157,25 @@ export default {
         const orderShippingCarrier = ref(['UPS', 'FedEx', 'DHL'])
         const orderShippingCarrierSelected = ref("")
         const orderTrackingNum = ref("")
+
+        const states = ref([
+            "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
+            "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
+            "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana",
+            "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota",
+            "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire",
+            "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota",
+            "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island",
+            "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont",
+            "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
+        ])
+        const activationState = ref("")
+        const activationCity = ref("")
+        const activationZipcode = ref("")
+        const activationAddress1 = ref("")
+        const activationAddress2 = ref("")
+        const activationCountrySelected = ref("USA")
+
         const getRouters = async () => {
             await $axios.get('/router/total').then(res => {
                 routers.value = res.data.data.filter((w) => w.hasOrder == false)
@@ -131,13 +203,19 @@ export default {
         const saveOrder = async () => {
             const data = {
                 id_customer: orderCustomerSeleted.value,
-                id_router: orderRouterSelected.value,
+                id_router: orderRouterSelected.value.id,
                 xfinity_user: orderXfinityUser.value,
                 xfinity_password: orderXfinityPassword.value,
                 account: orderCorrelative.value,
                 refill_payment_date: refillDate.value,
-                shipping_carrier: orderShippingCarrierSelected.value, 
-                tracking_num: orderTrackingNum.value
+                shipping_carrier: orderShippingCarrierSelected.value,
+                tracking_num: orderTrackingNum.value,
+                activation_address_state: activationState.value,
+                activation_address_city: activationCity.value,
+                activation_address_zipcode: activationZipcode.value,
+                activation_address_street: activationAddress1.value,
+                activation_address_street_2: activationAddress2.value,
+                activation_address_country: activationCountrySelected.value,
             }
             await $axios.post('/order/place', data).then(res => {
                 generateCorrelative()
@@ -168,6 +246,7 @@ export default {
                 })
             })
         }
+
         const generateCorrelative = async () => {
             // const currentYear = new Date().getFullYear();
             // const randomFiveDigits = Math.floor(10000 + Math.random() * 90000); // Ensures a 5-digit number
@@ -176,6 +255,10 @@ export default {
             // routerCorrelativeNum.value = correlativeNumber
             orderCorrelative.value = `CSXP-${correlativeNumber}`;
         }
+
+        const routerCorrelative = computed(() => {
+            return orderRouterSelected.value.correlative
+        })
 
         const menu = ref(false)
         const refillDate = ref(null)
@@ -190,25 +273,35 @@ export default {
             return '';
         });
 
-        const customersFormatted = computed(() =>             
+        const customersFormatted = computed(() =>
             customers.value.map((e) => ({
                 ...e,
                 title: `${e.name} - ${e.email}`
             }))
         )
 
-        const routersFormatted = computed(() =>             
-        routers.value.map((e) => ({
+        const routersFormatted = computed(() =>
+            routers.value.map((e) => ({
                 ...e,
                 title: `${e.name} - ${e.serial}`
             }))
         )
+
+        const openWindow = async () => {
+            const url = router.resolve({ name: 'orderPrintLabel', params: { id_router: orderRouterSelected.value.correlative } }).href
+            window.open(url, '_blank')
+        }
+
+        watch(orderRouterSelected, () => {
+            if (orderRouterSelected != null) {
+                showBtnPrint.value = false
+            }
+        })
         onMounted(() => {
             getRouters()
             getCustomers()
             generateCorrelative()
         })
-
         return {
             getRouters,
             getCustomers,
@@ -229,14 +322,31 @@ export default {
             refillDate,
             formattedRange,
             getOrders,
-            orderTotal, 
+            orderTotal,
 
             orderShippingCarrierSelected,
             orderShippingCarrier,
             orderTrackingNum,
 
             customersFormatted,
-            routersFormatted
+
+
+            activationState,
+            activationCity,
+            activationZipcode,
+            activationAddress1,
+            activationAddress2,
+            activationCountrySelected,
+            states,
+            routersFormatted,
+
+            routerCorrelative,
+
+            openWindow,
+
+            labelRef,
+            showBtnPrint
+
 
         }
     }
