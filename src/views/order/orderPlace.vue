@@ -8,11 +8,14 @@
                     </v-btn>
                 </v-col>
                 <v-col cols="1" offset="2" class="text-right">
-                    <v-btn icon="mdi mdi-printer-outline"  @click="openWindow()">
-
-                    </v-btn>
+                    <VueToPrint :content="labelRef" document-title="AwesomeFileName" remove-after-print>
+                        <template #trigger>
+                            <v-btn icon="mdi mdi-printer-outline" variant="outlined" :disabled="showBtnPrint">
+                            </v-btn>
+                        </template>
+                    </VueToPrint>
                 </v-col>
-                <v-col cols="3"  class="text-end">
+                <v-col cols="3" class="text-end">
                     <v-text-field label="Correlative" v-model="routerCorrelative" readonly>
                     </v-text-field>
                 </v-col>
@@ -104,24 +107,43 @@
                 </v-col>
             </v-row>
         </v-card>
+        <orderPrintLabel ref="labelRef" :routeCorrelative="routerCorrelative" class="hide-printable-label" />
     </v-container>
 </template>
 
 
-<style scoped></style>
+<style scoped>
+@media screen {
+    .hide-printable-label {
+        display: none;
+    }
+}
+
+@media print {
+    .hide-printable-label {
+        display: block !important;
+    }
+}
+</style>
 
 <script>
-import { ref, inject, onMounted, computed } from 'vue'
+import { ref, inject, onMounted, computed, watch } from 'vue'
 import Swal from 'sweetalert2';
 import { useRouter } from 'vue-router';
-
-
+import orderPrintLabel from '@/views/order/orderPrintLabel.vue'
+import { VueToPrint } from 'vue-to-print';
 export default {
+
+    components: {
+        orderPrintLabel,
+        VueToPrint
+    },
     setup() {
+        const labelRef = ref()
+        const showBtnPrint = ref(true)
         const $axios = inject('$axios')
         const routers = ref([])
         const customers = ref([])
-
         const router = useRouter();
 
 
@@ -181,7 +203,7 @@ export default {
         const saveOrder = async () => {
             const data = {
                 id_customer: orderCustomerSeleted.value,
-                id_router: orderRouterSelected.value,
+                id_router: orderRouterSelected.value.id,
                 xfinity_user: orderXfinityUser.value,
                 xfinity_password: orderXfinityPassword.value,
                 account: orderCorrelative.value,
@@ -269,12 +291,17 @@ export default {
             const url = router.resolve({ name: 'orderPrintLabel', params: { id_router: orderRouterSelected.value.correlative } }).href
             window.open(url, '_blank')
         }
+
+        watch(orderRouterSelected, () => {
+            if (orderRouterSelected != null) {
+                showBtnPrint.value = false
+            }
+        })
         onMounted(() => {
             getRouters()
             getCustomers()
             generateCorrelative()
         })
-
         return {
             getRouters,
             getCustomers,
@@ -315,7 +342,11 @@ export default {
 
             routerCorrelative,
 
-            openWindow
+            openWindow,
+
+            labelRef,
+            showBtnPrint
+
 
         }
     }
