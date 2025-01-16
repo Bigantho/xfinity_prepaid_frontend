@@ -294,7 +294,10 @@ export default {
 
         watch(orderRouterSelected, () => {
             if (orderRouterSelected != null) {
-                showBtnPrint.value = false
+                // showBtnPrint.value = false
+                //  #### SE DEJA EN TRUE PARA QUE NO SE PUEDA usar el btn , pero de deja la logica para reciclarlo despues
+                showBtnPrint.value = true
+
             }
         })
         onMounted(() => {
