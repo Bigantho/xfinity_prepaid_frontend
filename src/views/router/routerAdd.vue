@@ -27,7 +27,6 @@
             <v-row>
 
                 <v-col cols="6">
-
                     <v-text-field label="MAC Address" v-model="formattedMac" placeholder="XX:XX:XX:XX:XX:XX" maxlength="17"  counter>
                     </v-text-field>
                 </v-col>
@@ -68,14 +67,14 @@ export default {
         const routerName = ref("")
         // const routerBrand = ref("")
         const routerSerial = ref("")
-        const routerMAC = ref("")
+        // const routerMAC = ref("")
         // const routerModel = ref("")
         // const routerYearSelected = ref("")
         const routerCorrelativeNum = ref("")
         const routerCorrelative = ref("CUXPR")
 
         const totalRouters = ref(0)
-        const formattedMac = ref('')
+        const formattedMac = ref("")
         const years = ref([
             "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009",
             "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019",
@@ -89,7 +88,7 @@ export default {
         const saveRouters = async () => {
 
             const data = {
-                mac_address: routerMAC.value,
+                mac_address: formattedMac.value,
                 name: routerName.value,
                 // brand: routerBrand.value,
                 serial: routerSerial.value,
@@ -133,7 +132,7 @@ export default {
             routerName.value = ""
             // routerBrand.value = ""
             routerSerial.value = ""
-            routerMAC.value = ""
+            // routerMAC.value = ""
             formattedMac.value = ""
             // routerModel.value = ""
             // routerYearSelected.value = ""
@@ -163,7 +162,7 @@ export default {
             routerName,
             // routerBrand,
             routerSerial,
-            routerMAC,
+            // routerMAC,
             // routerModel,
             // routerYearSelected,
             routerCorrelative,
@@ -174,7 +173,7 @@ export default {
 
             openWindow,
             clearFields,
-            formattedMac,
+            formattedMac
             // formattedMacComputed
         }
     }
