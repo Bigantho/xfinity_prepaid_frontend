@@ -5,17 +5,17 @@
         </v-row> -->
         <v-row>
             <v-col cols="6" class="text-center">
-                <!-- <h1 class="text-start">Label to download</h1> -->
+                <h1 class="text-start">Label to download</h1>
                 <div class="center-container text-center" ref="captureArea">
                     <div class="text-center xp-border-print">
                         <h3>INTERNET SERVICE SUPPORT</h3>
                         <h2> <v-icon icon="mdi-phone"></v-icon> <strong> (888) 409-3273
                             </strong> </h2>
-                        <h3>{{ props.routeCorrelative }}</h3>
+                        <h3>{{ routerId }}</h3>
                     </div>
                 </div>
             </v-col>
-            <!-- <v-col cols="6" class="text-center">
+            <v-col cols="6" class="text-center">
                 <v-btn prepend-icon="mdi mdi-camera-outline" class="mr-3" base-color="#4D87E2" @click="generateImg">
                     Capture Label
                 </v-btn>
@@ -27,7 +27,7 @@
                     <h2>Captured Label:</h2>
                     <img :src="capturedImage" style="width: 4in; height: 2in;" alt="Captured Content" />
                 </div>
-            </v-col> -->
+            </v-col>
         </v-row>
         <br>
         <br><br>
@@ -72,7 +72,7 @@ export default {
     },
     setup(props) {
         const $route = useRoute()
-        // const routerId = $route.params.id_router
+        const routerId = $route.params.id_router
 
         const captureArea = ref(null);
         const capturedImage = ref(null);
@@ -91,13 +91,15 @@ export default {
             if (capturedImage.value) {
                 const link = document.createElement("a");
                 link.href = capturedImage.value;
-                link.download = `Label-${props.routeCorrelative}.png`; // Set the default filename
+                // link.download = `Label-${props.routeCorrelative}.png`; // Set the default filename
+                link.download = `Label-${routerId}.png`
                 link.click();
             }
         };
 
         return {
             // routeCorrelative,
+            routerId,
             captureArea,
             capturedImage,
             generateImg,

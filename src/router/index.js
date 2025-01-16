@@ -75,7 +75,8 @@ const routes = [
         name:'orderPlace'
       }, 
       {
-        path: 'print',
+        // path: 'print',
+        path: 'print/:id_router',
         component: orderPrintLabel,
         name: 'orderPrintLabel',
         meta: { hideHeader: true } 
