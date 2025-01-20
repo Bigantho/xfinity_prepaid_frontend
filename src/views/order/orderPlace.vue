@@ -107,7 +107,6 @@
                 </v-col>
             </v-row>
         </v-card>
-        <orderPrintLabel ref="labelRef" :routeCorrelative="routerCorrelative" class="hide-printable-label" />
     </v-container>
 </template>
 
@@ -132,10 +131,12 @@ import Swal from 'sweetalert2';
 import { useRouter } from 'vue-router';
 import orderPrintLabel from '@/views/order/orderPrintLabel.vue'
 import { VueToPrint } from 'vue-to-print';
+import html2canvas from "html2canvas";
+
 export default {
 
     components: {
-        orderPrintLabel,
+        // orderPrintLabel,
         VueToPrint
     },
     setup() {
@@ -145,6 +146,7 @@ export default {
         const routers = ref([])
         const customers = ref([])
         const router = useRouter();
+        const captureElement = ref(null);
 
 
         const orderLabel = ref("")
@@ -292,6 +294,35 @@ export default {
             window.open(url, '_blank')
         }
 
+        const generateImagen = async () => {
+            
+            if (captureElement.value) {
+                console.log("entroooooo", captureElement.value);
+                const canvas = await html2canvas(captureElement.value);
+                const imgData = canvas.toDataURL("image/png");
+
+                // Crear una nueva ventana con la imagen y llamar a imprimir
+                const printWindow = window.open("", "_blank");
+                printWindow.document.write(`
+                                <html>
+                                    <head>
+                                    <title>Imprimir Imagen</title>
+                                    </head>
+                                    <body>
+                                    <img src="${imgData}" style="width:100%;" />
+                                    <script>
+                                        window.onload = function() {
+                                        window.print();
+                                        window.onafterprint = function() { window.close(); }
+                                        }
+                                    <\/script>
+                                    </body>
+                                </html>
+                                `);
+                printWindow.document.close();
+            }
+        }
+
         watch(orderRouterSelected, () => {
             if (orderRouterSelected != null) {
                 // showBtnPrint.value = false
@@ -348,7 +379,10 @@ export default {
             openWindow,
 
             labelRef,
-            showBtnPrint
+            showBtnPrint,
+
+            generateImagen,
+            captureElement
 
 
         }

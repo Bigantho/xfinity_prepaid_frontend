@@ -99,7 +99,7 @@ export default {
                 active: "1",
             }
             await $axios.post('/router/create', data).then(res => {
-                // openWindow()
+                openWindow()
                 generateCorrelative()
                 clearFields()
             }).catch(err => {
