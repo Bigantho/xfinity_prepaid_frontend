@@ -33,11 +33,15 @@
             <v-data-table :headers="headersOrders" :items="orders" height="450" item-value="name">
                 <template v-slot:item.actions="{ item }">
                     <v-row>
-                        <v-col   cols="6" > <v-btn icon="mdi-delete" variant="text" @click="dltOrder(item.id)" color="red">
-                            </v-btn></v-col>
-                        <v-col cols="6"><v-btn icon="mdi-printer-outline" variant="text"
+                        <v-col cols="6"> 
+                            <v-btn icon="mdi-delete" variant="text" @click="dltOrder(item.id)" color="red">
+                            </v-btn>
+                        </v-col>
+                        <v-col cols="6">
+                            <v-btn icon="mdi-printer-outline" variant="text"
                                 @click="openWindow(item.routerCorrelative)">
-                            </v-btn></v-col>
+                            </v-btn>
+                        </v-col>
 
 
                     </v-row>

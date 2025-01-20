@@ -23,6 +23,7 @@ import routerAdd from '@/views/router/routerAdd.vue'
 import payment from '@/views/payment/payment.vue'
 import paymentTotal from '@/views/payment/paymentTotal.vue'
 import paymentAdd from '@/views/payment/paymentAdd.vue'
+
 // import { authGuard } from './guards'
 
 const routes = [
@@ -116,7 +117,7 @@ const routes = [
       //   meta: { hideHeader: true } 
       // }
     ]
-  },
+  }
 ]
 
 

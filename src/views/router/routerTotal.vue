@@ -10,7 +10,7 @@
                     New Router
                 </v-btn>
             </v-col>
-        
+
 
             <v-col cols="3" offset="1">
                 <v-menu v-model="menu" :close-on-content-click="false" location="end">
@@ -23,24 +23,32 @@
                     </v-card>
                 </v-menu>
             </v-col>
-            <v-col cols="3"> <v-select :items="states" label="State" disabled></v-select> </v-col>
+            <v-col cols="3">
+                <v-text-field v-model="searchParam" label="Search by Serial or Mac" variant="outlined" hide-details>
+
+                </v-text-field>
+
+            </v-col>
             <v-col cols="2">
-                <v-btn append-icon="mdi mdi-download" variant="outlined" base-color="green" disabled>
-                    Excel
-                </v-btn>
+                <v-btn icon="mdi mdi-magnify" variant="outlined" base-color="green"
+                    @click="getRouters(searchParam)"></v-btn>
             </v-col>
         </v-row>
         <br>
         <v-card>
-            <v-data-table :headers="headersRouters" :items="routers" height="450" item-value="name" >
-                <template v-slot:item.wasShipped="{ item }">
+            <v-data-table :headers="headersRouters" :items="routers" height="450" item-value="name">
+                <template v-slot:item.status="{ item }">
                     <v-chip variant="tonal" color="#447845" rounded>
-                        {{ item.wasShipped ? "Enviado" : "No enviado" }}
+                        {{ item.status }}
                     </v-chip>
                 </template>
                 <template v-slot:item.actions="{ item }">
-                    <v-btn icon="mdi-printer-outline" variant="text" @click="openWindow(item.correlative)">
-                    </v-btn>
+                    <div class="d-flex align-center">
+                        <v-btn icon="mdi-printer-outline" variant="text" @click="openWindow(item.correlative)">
+                        </v-btn>
+                        <v-btn icon="mdi-pencil" variant="text" @click="openDialog(item.id)">
+                        </v-btn>
+                    </div>
                 </template>
 
                 <template v-slot:item.createdAt="{ item }">
@@ -48,11 +56,34 @@
                 </template>
             </v-data-table>
         </v-card>
+
+        <v-dialog v-model="showDialog" width="50%">
+            <v-card class="pa-10 text-center">
+                <h2>Router's Status</h2>
+                <br>
+                <v-select :items="routerStatuses" v-model="routerStatusesSelected" item-title="name" item-value="id"
+                    label="Select Status">
+
+                </v-select>
+
+                <template v-slot:actions>
+                    <v-spacer></v-spacer>
+
+                    <v-btn @click="showDialog = false" variant="outlined">
+                        Cancelled
+                    </v-btn>
+
+                    <v-btn @click="updateRouter()" variant="outlined">
+                        Save
+                    </v-btn>
+                </template>
+            </v-card>
+        </v-dialog>
     </v-container>
 </template>
 
 <script lang="js">
-import { ref, computed, inject, onMounted ,getCurrentInstance} from "vue"
+import { ref, computed, inject, onMounted, getCurrentInstance } from "vue"
 import { useRouter } from "vue-router";
 import html2canvas from "html2canvas";
 export default {
@@ -60,6 +91,11 @@ export default {
     setup() {
         const axios = inject('$axios')
         const $router = useRouter()
+        const searchParam = ref('')
+        const showDialog = ref(false)
+        const routerPicked = ref(null)
+        const routerStatuses = ref([])
+        const routerStatusesSelected = ref(null)
         const { proxy } = getCurrentInstance()
         const states = ref([
             "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
@@ -94,19 +130,44 @@ export default {
             { title: 'Creation Date', align: 'center', key: 'createdAt' },
             { title: 'Serial', align: 'center', key: 'serial' },
             { title: 'MAC', align: 'center', key: 'macAddress' },
-            { title: 'Shipment', align: 'center', key: 'wasShipped' },
+            { title: 'Status', align: 'center', key: 'status' },
             { title: 'Actions', align: 'center', key: 'actions' }
         ])
 
         const routers = ref([])
 
 
-        const getRouters = async () => {
-            await axios.get('/router/total').then(res => {
+        const getRouters = async (search = "") => {
+            await axios.get('/router/total', {
+                params: {
+                    query: search.trim()
+                }
+            }).then(res => {
                 routers.value = res.data.data
             }).catch(err => {
 
             })
+        }
+
+        const getRoutersCatalog = async () => {
+            await axios.get('/router/catalog').then(res => {
+                console.log(res);
+
+                routerStatuses.value = res.data.data
+            }).catch(err => { })
+        }
+
+        const updateRouter = async () => {
+            console.log("udopated");
+
+            await axios.put(`/router/update/${routerPicked.value}`, {
+                id_statuses_routers: routerStatusesSelected.value
+            }).then(res => { })
+                .catch(err => {
+                    console.log(err);
+
+                })
+                .finally(() => { showDialog.value = false  ;getRouters() })
         }
 
         const openWindow = async (correlative) => {
@@ -114,9 +175,14 @@ export default {
             window.open(url, '_blank')
         }
 
-        
+        const openDialog = async (id) => {
+            routerPicked.value = id
+            showDialog.value = true
+        }
+
         onMounted(() => {
             getRouters()
+            getRoutersCatalog()
         })
 
         return {
@@ -130,7 +196,14 @@ export default {
             getRouters,
 
             openWindow,
-            proxy
+            proxy,
+            searchParam,
+            openDialog,
+            routerStatuses,
+            routerStatusesSelected,
+            updateRouter,
+            routerPicked,
+            showDialog,
         }
     }
 }
