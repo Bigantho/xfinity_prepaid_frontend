@@ -29,7 +29,7 @@
         </v-row>
         <br>
         <v-card>
-            <v-data-table :headers="headersPayment" :items="payments" height="450" item-value="name" >
+            <v-data-table :headers="headersPayment" :items="payments" height="450" item-value="name" fixed-header>
                 <template v-slot:item.chargedAt="{ item }">
                     {{ proxy.$globalMethods.convertToUTC6(item.chargedAt) }}
                 </template>

@@ -62,8 +62,8 @@
                 <h3 class="xp-title-table">Routers</h3>
                 <br>
                 <v-card>
-                    <v-data-table :headers="headersRoutes" :items="routes" height="250" item-value="name"
-                        hide-default-footer>
+                    <v-data-table :headers="headersRoutes" :items="routes" height="250"  item-value="name" 
+                        hide-default-footer items-per-page="-1" fixed-header >
                         <template v-slot:item.shipped="{ item }">
                             <v-chip variant="tonal" color="#447845" rounded>
                                 {{ item.statusShipment ? 'Enviado' : 'No enviado' }}
