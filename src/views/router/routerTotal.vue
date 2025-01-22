@@ -36,7 +36,7 @@
         </v-row>
         <br>
         <v-card>
-            <v-data-table :headers="headersRouters" :items="routers" height="450" item-value="name">
+            <v-data-table :headers="headersRouters" :items="routers" height="450" item-value="name" fixed-header>
                 <template v-slot:item.status="{ item }">
                     <v-chip variant="tonal" color="#447845" rounded>
                         {{ item.status }}
