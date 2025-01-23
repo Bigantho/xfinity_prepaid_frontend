@@ -144,6 +144,7 @@ export default {
         const headersOrders = ref([
             { title: '#', align: 'center', key: 'position' },
             { title: 'Account', align: 'center', key: 'account' },
+            { title: 'Router Assigned', align: 'center', key: 'routerCorrelative' },
             { title: 'Full Name', align: 'center', key: 'fullName' },
             { title: 'Phone Assigned', align: 'center', key: 'virtualPhone' },
             { title: 'Xfinity User', align: 'center', key: 'xfinityUser' },
