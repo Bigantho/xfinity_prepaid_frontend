@@ -290,7 +290,6 @@ export default {
         onMounted(() => {
             getTotalOrder()
             getOrderCatalog()
-            updateOrder()
         })
 
         return {
