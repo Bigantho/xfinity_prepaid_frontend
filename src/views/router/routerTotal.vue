@@ -109,6 +109,7 @@ export default {
             "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
         ])
 
+     
         const menu = ref(false)
         const dateSelected = ref(null)
         // Computed property to format the date range for display
@@ -157,6 +158,8 @@ export default {
             }).catch(err => { })
         }
 
+       
+
         const updateRouter = async () => {
             console.log("udopated");
 
@@ -204,6 +207,7 @@ export default {
             updateRouter,
             routerPicked,
             showDialog,
+           
         }
     }
 }

@@ -25,11 +25,11 @@
             <v-row class="text-center">
                 <v-col cols="6">
                     <v-select label="Select Customer" :items="customersFormatted" item-title="title" item-value="id"
-                        v-model="orderCustomerSeleted">
+                        v-model="orderCustomerSeleted" variant="outlined">
                     </v-select>
                 </v-col>
                 <v-col cols="6">
-                    <v-select label="Select Router" :items="routersFormatted" item-title="title" item-value="id"
+                    <v-select label="Select Router" :items="routersFormatted" variant="outlined" item-title="title" item-value="id"
                         v-model="orderRouterSelected" return-object>
                     </v-select>
                 </v-col>
@@ -37,12 +37,12 @@
             <v-row class="text-center">
                 <v-col cols="6">
 
-                    <v-text-field v-model="orderXfinityUser" label="Xfinity User">
+                    <v-text-field v-model="orderXfinityUser"  variant="outlined" label="Xfinity User">
 
                     </v-text-field>
                 </v-col>
                 <v-col cols="6">
-                    <v-text-field v-model="orderXfinityPassword" label="Password Xfinity">
+                    <v-text-field v-model="orderXfinityPassword" variant="outlined" label="Password Xfinity">
                     </v-text-field>
                 </v-col>
             </v-row>
@@ -52,11 +52,11 @@
                     <!-- <v-text-field v-model="orderXfinityUser" label="Xfinity User"> -->
                     <!-- </v-text-field> -->
 
-                    <v-select :items="orderShippingCarrier" v-model="orderShippingCarrierSelected" label="Currier">
+                    <v-select :items="orderShippingCarrier" v-model="orderShippingCarrierSelected" label="Currier" variant="outlined">
                     </v-select>
                 </v-col>
                 <v-col cols="6">
-                    <v-text-field v-model="orderTrackingNum" label="Tracking Number">
+                    <v-text-field v-model="orderTrackingNum" label="Tracking Number" variant="outlined">
                     </v-text-field>
                 </v-col>
             </v-row>
@@ -77,23 +77,26 @@
             <br>
             <v-row>
                 <v-col cols="4">
-                    <v-select label="State" :items="states" variant="outlined" v-model="activationState"></v-select>
-                </v-col>
-                <v-col cols="4">
-                    <v-text-field label="City" variant="outlined" v-model="activationCity"></v-text-field>
-                </v-col>
-                <v-col cols="4">
-                    <v-text-field label="Zipcode" variant="outlined" v-model="activationZipcode"></v-text-field>
-                </v-col>
-            </v-row>
-            <v-row>
-                <v-col cols="4">
                     <v-text-field label="Address Street 1" variant="outlined"
                         v-model="activationAddress1"></v-text-field>
                 </v-col>
                 <v-col cols="4">
                     <v-text-field label="Address Street 2" variant="outlined"
                         v-model="activationAddress2"></v-text-field>
+                </v-col>
+                <v-col cols="4">
+                    <v-text-field label="City" variant="outlined" v-model="activationCity"></v-text-field>
+                </v-col>
+               
+            
+             
+            </v-row>
+            <v-row>
+                <v-col cols="4">
+                    <v-text-field label="Zipcode" variant="outlined" v-model="activationZipcode"></v-text-field>
+                </v-col>
+                <v-col cols="4">
+                    <v-select label="State" :items="states" variant="outlined" v-model="activationState"></v-select>
                 </v-col>
                 <v-col cols="4">
                     <v-select label="Country" :items="['USA']" v-model="activationCountrySelected" disabled></v-select>
@@ -156,7 +159,7 @@ export default {
         const orderRouterSelected = ref("")
         const orderCorrelative = ref("")
         const orderTotal = ref(0)
-        const orderShippingCarrier = ref(['UPS', 'FedEx', 'DHL'])
+        const orderShippingCarrier = ref(['UPS', 'FedEx', 'DHL','USPS'])
         const orderShippingCarrierSelected = ref("")
         const orderTrackingNum = ref("")
 
@@ -206,6 +209,7 @@ export default {
             const data = {
                 id_customer: orderCustomerSeleted.value,
                 id_router: orderRouterSelected.value.id,
+                id_status_order: 1, // Por default 1 que es "Created"
                 xfinity_user: orderXfinityUser.value,
                 xfinity_password: orderXfinityPassword.value,
                 account: orderCorrelative.value,

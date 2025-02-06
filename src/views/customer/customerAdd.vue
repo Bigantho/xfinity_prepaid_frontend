@@ -9,14 +9,17 @@
             <v-text-field label="Apellido" variant="outlined" v-model="customerLastName"></v-text-field>
         </v-col>
         <v-col cols="4">
-            <v-select :items="genders" v-model="customerGenderSelected" variant="outlined" label="Gender">
-            </v-select>
-            <!-- <v-text-field label="Gender" variant="outlined" v-model="customerGender"></v-text-field> -->
+            <!-- <v-select :items="genders" v-model="customerGenderSelected" variant="outlined" label="Gender">
+            </v-select> -->
+            <v-text-field label="Cellphone" variant="outlined" v-model="customerCellPhone"></v-text-field>
+
         </v-col>
     </v-row>
     <v-row>
         <v-col cols="4">
-            <v-menu v-model="menu" :close-on-content-click="false" location="end">
+            <v-text-field label="Email" variant="outlined" v-model="customerEmail"></v-text-field>
+
+            <!-- <v-menu v-model="menu" :close-on-content-click="false" location="end">
                 <template v-slot:activator="{ props }">
                     <v-text-field label="Birthday" v-bind="props" v-model="formattedRange"
                         variant="outlined"></v-text-field>
@@ -24,18 +27,16 @@
                 <v-card min-width="300">
                     <v-date-picker v-model="customerBirthday"></v-date-picker>
                 </v-card>
-            </v-menu>
+            </v-menu> -->
         </v-col>
         <v-col cols="4">
-            <v-text-field label="Cellphone" variant="outlined" v-model="customerCellPhone"></v-text-field>
         </v-col>
         <v-col cols="4">
-            <v-text-field label="Email" variant="outlined" v-model="customerEmail"></v-text-field>
         </v-col>
     </v-row>
     <v-row>
         <v-col cols="4">
-            <v-text-field label="Home Phone" variant="outlined" v-model="customerHomePhone"></v-text-field>
+            <!-- <v-text-field label="Home Phone" variant="outlined" v-model="customerHomePhone"></v-text-field> -->
         </v-col>
     </v-row>
 
@@ -43,21 +44,24 @@
     <br>
     <v-row>
         <v-col cols="4">
-            <v-select label="State" :items="states" variant="outlined" v-model="customerStateSelected"></v-select>
-        </v-col>
-        <v-col cols="4">
-            <v-text-field label="City" variant="outlined" v-model="customerCity"></v-text-field>
-        </v-col>
-        <v-col cols="4">
-            <v-text-field label="Zipcode" variant="outlined" v-model="customerZipcode"></v-text-field>
-        </v-col>
-    </v-row>
-    <v-row>
-        <v-col cols="4">
             <v-text-field label="Address Street 1" variant="outlined" v-model="customerAddress1"></v-text-field>
         </v-col>
         <v-col cols="4">
             <v-text-field label="Address Street 2" variant="outlined" v-model="customerAddress2"></v-text-field>
+        </v-col>
+        <v-col cols="4">
+            <v-text-field label="City" variant="outlined" v-model="customerCity"></v-text-field>
+        </v-col>
+       
+       
+       
+    </v-row>
+    <v-row>
+        <v-col cols="4">
+            <v-text-field label="Zipcode" variant="outlined" v-model="customerZipcode"></v-text-field>
+        </v-col>
+        <v-col cols="4">
+            <v-select label="State" :items="states" variant="outlined" v-model="customerStateSelected"></v-select>
         </v-col>
         <v-col cols="4">
             <v-select label="Country" :items="['USA']" v-model="customerCountrySelected" disabled></v-select>
@@ -139,7 +143,6 @@ export default {
         const saveCustomer = async () => {
 
             const customerObj = {
-
                 name: customerName.value,
                 last_name: customerLastName.value,
                 address_country: customerCountrySelected.value,
@@ -148,9 +151,9 @@ export default {
                 address_state: customerStateSelected.value,
                 address_city: customerCity.value,
                 address_zipcode: customerZipcode.value,
-                gender: customerGenderSelected.value,
+                // gender: customerGenderSelected.value,
                 // created_by: 17,
-                birthday: customerBirthday.value,
+                // birthday: customerBirthday.value,
                 phone_number: customerCellPhone.value,
                 email: customerEmail.value,
                 active: 1,
@@ -159,7 +162,6 @@ export default {
             }
             await axios.post('/customer/create',
                 customerObj
-
             ).then(response => {
 
                 disabledBtn.value = false

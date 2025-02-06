@@ -23,6 +23,8 @@ import routerAdd from '@/views/router/routerAdd.vue'
 import payment from '@/views/payment/payment.vue'
 import paymentTotal from '@/views/payment/paymentTotal.vue'
 import paymentAdd from '@/views/payment/paymentAdd.vue'
+import paymentMake from '@/views/payment/paymentMake.vue'
+
 
 // import { authGuard } from './guards'
 
@@ -110,12 +112,11 @@ const routes = [
         component: paymentAdd, 
         name:'paymentAdd'
       }, 
-      // {
-      //   path: 'print/:id_router',
-      //   component: orderPrintLabel,
-      //   name: 'orderPrintLabel',
-      //   meta: { hideHeader: true } 
-      // }
+      {
+        path: 'make',
+        component: paymentMake,
+        name: 'paymentMake',
+      }
     ]
   }
 ]

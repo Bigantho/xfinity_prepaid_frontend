@@ -29,30 +29,38 @@
             </v-col>
         </v-row>
         <br>
+        {{ orderPicked }}
         <v-card>
             <v-data-table :headers="headersOrders" :items="orders" height="450" item-value="name" fixed-header>
                 <template v-slot:item.actions="{ item }">
-                    <v-row>
-                        <v-col cols="4">
-                            <v-btn icon="mdi-delete" variant="text" @click="dltOrder(item.id)" color="red">
+                    <v-row dense justify="space-around" align="center">
+                        <v-col cols="3">
+                            <v-btn icon="mdi-delete" variant="text" @click="dltOrder(item.id)" color="red" size="small">
                             </v-btn>
                         </v-col>
-                        <v-col cols="4">
-                            <v-btn icon="mdi-printer-outline" variant="text"
+                        <v-col cols="3">
+                            <v-btn icon="mdi-printer-outline" variant="text" size="small"
                                 @click="openWindow(item.routerCorrelative)">
                             </v-btn>
                         </v-col>
-                        <v-col cols="4">
-                            <v-btn icon="mdi-file-document-multiple-outline" variant="text"
+                        <v-col cols="3">
+                            <v-btn icon="mdi-file-document-multiple-outline" variant="text" size="small"
                                 @click="openFilesWindow(item.id)">
                             </v-btn>
                         </v-col>
-
+                        <v-col cols="3">
+                            <v-btn icon="mdi-pencil" variant="text" size="small" @click="openEditWindow(item.id)">
+                            </v-btn>
+                        </v-col>
                     </v-row>
 
                 </template>
                 <template v-slot:item.refillDate="{ item }">
                     {{ proxy.$globalMethods.convertToUTC6(item.refillDate) }}
+                </template>
+
+                <template v-slot:item.orderStatus="{ item }">
+                    {{ item.statusOrder.name }}
                 </template>
             </v-data-table>
         </v-card>
@@ -60,7 +68,6 @@
             <v-card class="pa-10 text-center">
                 <h2>Current Files</h2>
                 <br>
-
                 <v-list>
                     <v-list-item v-for="(item, i) in filesList" :key="i" :value="item" color="primary">
                         <a :href="item.url" target="_blanku">{{ item.name }}</a>
@@ -90,6 +97,22 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <v-dialog v-model="showDialogEdit" width="50%">
+            <v-card class="pa-10 text-center">
+                <h2>Order's Status</h2>
+                <br>
+                <v-select :items="orderStatuses" v-model="orderStatusesSelected" item-title="name" item-value="id"
+                    label="Select Status">
+
+                </v-select>
+
+
+                <v-card-actions>
+                    <v-btn @click="showDialogEdit = false">Cancelar</v-btn>
+                    <v-btn @click="updateOrder()">Save</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-container>
 </template>
 
@@ -105,9 +128,15 @@ export default {
         const { proxy } = getCurrentInstance()
         const $router = useRouter();
         const showDialog = ref(false)
+        const showDialogEdit = ref(false)
         const files = ref([])
         const filesList = ref([])
         const orderOpened = ref(null)
+
+        const orderStatuses = ref([])
+        const orderStatusesSelected = ref(null)
+        const orderPicked = ref(null)
+
         const rules = ref([
             value => {
                 return !value || !value.length || value[0].size < 5000000 || 'Avatar size should be less than 5 MB!'
@@ -152,6 +181,7 @@ export default {
             { title: 'Refill Date', align: 'center', key: 'refillDate' },
             { title: 'Tracking Number', align: 'center', key: 'trackingNum' },
             { title: 'Shipment Status', align: 'center', key: 'shipmentStatus' },
+            { title: 'Order Status', align: 'center', key: 'orderStatus' },
             { title: 'Actions', align: 'center', key: 'actions' },
 
         ])
@@ -198,6 +228,14 @@ export default {
             await getFiles()
         }
 
+        const openEditWindow = async (idOrder) => {
+            console.log(idOrder);
+
+            showDialogEdit.value = true
+            orderPicked.value = idOrder
+
+        }
+
         const saveFiles = async () => {
 
             const formData = new FormData();
@@ -233,10 +271,26 @@ export default {
             })
         }
 
+        const getOrderCatalog = async () => {
+            await axios.get('/order/catalog').then(res => {
+                orderStatuses.value = res.data.data
+            })
+        }
 
+        const updateOrder = async () => {
+            await axios.put(`/order/update/${orderPicked.value}`, {
+                id_statuses_orders: orderStatusesSelected.value
+            }).then(res => { })
+                .catch(err => {
+                    console.log(err);
+                })
+                .finally(() => { showDialogEdit.value = false; getTotalOrder() })
+        }
 
         onMounted(() => {
             getTotalOrder()
+            getOrderCatalog()
+            updateOrder()
         })
 
         return {
@@ -261,7 +315,16 @@ export default {
             openFilesWindow,
             filesList,
             orderOpened,
-            rules
+            rules,
+            showDialogEdit,
+            openEditWindow,
+
+            getOrderCatalog,
+            orderStatuses,
+            orderStatusesSelected,
+            showDialogEdit,
+            updateOrder,
+            orderPicked
         }
     }
 }

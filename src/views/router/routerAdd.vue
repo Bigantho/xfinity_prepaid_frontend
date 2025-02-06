@@ -14,7 +14,7 @@
             <br>
             <v-row>
                 <v-col cols="6">
-                    <v-text-field label="Name" v-model="routerName" readonly>
+                    <v-text-field label="Name" v-model="routerName" readonly variant="outlined">
                     </v-text-field>
                 </v-col>
                 <v-col cols="6">
@@ -27,7 +27,8 @@
             <v-row>
 
                 <v-col cols="6">
-                    <v-text-field label="MAC Address" v-model="formattedMac" placeholder="XX:XX:XX:XX:XX:XX" maxlength="17"  counter>
+                    <v-text-field label="MAC Address" v-model="formattedMac" placeholder="XX:XX:XX:XX:XX:XX"
+                        maxlength="17" counter>
                     </v-text-field>
                 </v-col>
             </v-row>
@@ -109,7 +110,7 @@ export default {
 
         const getRouters = async () => {
             await $axios.get('/router/total').then(res => {
-                totalRouters.value = res.data.data.length
+                totalRouters.value = res.data.correlativeCount
             }).catch(err => {
 
             })
