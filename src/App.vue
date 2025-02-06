@@ -103,8 +103,11 @@
             </template>
             <v-list-item prepend-icon="mdi mdi-plus" title="Add Payment" value="9"
               @click="$router.push({ name: 'paymentAdd' })"></v-list-item>
+              <v-list-item prepend-icon="mdi mdi-cash-plus" title="Make Payment" value="11"
+                @click="$router.push({ name: 'paymentMake' })"></v-list-item>
             <v-list-item prepend-icon="mdi mdi-format-list-bulleted" title="Payments" value="10"
               @click="$router.push({ name: 'paymentTotal' })"></v-list-item>
+
           </v-list-group>
 
 

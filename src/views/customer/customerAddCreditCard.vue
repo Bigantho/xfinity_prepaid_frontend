@@ -62,21 +62,23 @@
             <br>
             <v-row>
                 <v-col cols="4">
-                    <v-select label="State" :items="states" variant="outlined" v-model="billingStateSelected"></v-select>
-                </v-col>
-                <v-col cols="4">
-                    <v-text-field label="City" variant="outlined" v-model="billingCity"></v-text-field>
-                </v-col>
-                <v-col cols="4">
-                    <v-text-field label="Zipcode" variant="outlined" v-model="billingZipcode"></v-text-field>
-                </v-col>
-            </v-row>
-            <v-row>
-                <v-col cols="4">
                     <v-text-field label="Address Street 1" variant="outlined" v-model="billingAddress1"></v-text-field>
                 </v-col>
                 <v-col cols="4">
                     <v-text-field label="Address Street 2" variant="outlined" v-model="billingAddress2"></v-text-field>
+                </v-col>
+                <v-col cols="4">
+                    <v-text-field label="City" variant="outlined" v-model="billingCity"></v-text-field>
+                </v-col>
+            
+            </v-row>
+            <v-row>
+                <v-col cols="4">
+                    <v-select label="State" :items="states" variant="outlined" v-model="billingStateSelected"></v-select>
+                </v-col>
+               
+                <v-col cols="4">
+                    <v-text-field label="Zipcode" variant="outlined" v-model="billingZipcode"></v-text-field>
                 </v-col>
                 <v-col cols="4">
                     <v-select label="Country" :items="['USA']" v-model="billingCountrySelected" disabled></v-select>
