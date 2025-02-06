@@ -29,13 +29,12 @@
             </v-col>
         </v-row>
         <br>
-        {{ orderPicked }}
         <v-card>
             <v-data-table :headers="headersOrders" :items="orders" height="450" item-value="name" fixed-header>
                 <template v-slot:item.actions="{ item }">
                     <v-row dense justify="space-around" align="center">
                         <v-col cols="3">
-                            <v-btn icon="mdi-delete" variant="text" @click="dltOrder(item.id)" color="red" size="small">
+                            <v-btn icon="mdi-delete" variant="text" @click="dltOrder(item.id)" color="red" size="small" disabled>
                             </v-btn>
                         </v-col>
                         <v-col cols="3">
