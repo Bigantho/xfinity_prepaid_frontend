@@ -101,7 +101,7 @@
               <v-list-item v-bind="props" prepend-icon="mdi mdi-account-credit-card-outline" title="Payments"
                 value="starred"></v-list-item>
             </template>
-            <v-list-item prepend-icon="mdi mdi-plus" title="Add Payment" value="9"
+            <v-list-item prepend-icon="mdi mdi-plus" title="Related Payment" value="9"
               @click="$router.push({ name: 'paymentAdd' })"></v-list-item>
               <v-list-item prepend-icon="mdi mdi-cash-plus" title="Make Payment" value="11"
                 @click="$router.push({ name: 'paymentMake' })"></v-list-item>
