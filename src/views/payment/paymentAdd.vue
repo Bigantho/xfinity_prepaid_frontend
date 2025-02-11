@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <h1 class="text-center">New Payment</h1>
+        <h1 class="text-center">Related Payment</h1>
         <br>
         <v-card class="pa-8">
             <v-row>
@@ -10,27 +10,19 @@
             </v-row>
             <v-row>
                 <v-col cols="6">
-                    <v-select label="Select order" variant="outlined" :items="formattedOrders" item-title="title"
-                        item-value="id" v-model="orderSelected">
+                    <v-select label="Select order (Customer - Account)" variant="outlined" :items="formattedOrders"
+                        item-title="title" item-value="id" v-model="orderSelected">
                     </v-select>
                 </v-col>
-                <v-col cols="6"> 
-                    <v-select :items="paymentTypeFormatted" v-model="paymentTypeSelected" item-title="title" item-value="id" variant="outlined" label="Payment type">
+                <v-col cols="6">
+                    <v-select :items="paymentsFormatted" v-model="paymentsSelected" item-title="title" item-value="id"
+                        variant="outlined" label="Payments (Customer - Amount - TrxID)">
                     </v-select>
-                 </v-col>
+                </v-col>
                 <v-col cols="6"></v-col>
 
             </v-row>
-            <v-row>
-                <v-col cols="6">
-                    <v-text-field label="Trx ID" variant="outlined" v-model="paymentTrxId">
-                    </v-text-field>
-                </v-col>
-                <v-col cols="6">
-                  
 
-                </v-col>
-            </v-row>
             <v-row>
                 <v-col class="text-center">
                     <v-btn prepend-icon="mdi mdi-content-save" base-color="#4D87E2" size="large" @click="savePayment">
@@ -56,10 +48,9 @@ export default {
         const $axios = inject('$axios')
 
         const orderSelected = ref(null)
-        const paymentType = ref([])
-        const paymentTypeSelected = ref(null)
-        const paymentTrxId = ref(null)
-        
+        const payments = ref([])
+        const paymentsSelected = ref(null)
+
         const router = useRouter();
 
 
@@ -79,24 +70,22 @@ export default {
         )
 
 
-        const paymentTypeFormatted = computed(() =>
-            paymentType.value.map((e) => ({
+        const paymentsFormatted = computed(() =>
+            payments.value.map((e) => ({
                 ...e,
-                title: `${e.name} - $${e.amount}`
+                title: `${e.card_holder} - $${e.amount} - ${e.trxId}`
             }))
-    )
+        )
         const savePayment = async () => {
 
             const dataToSave = {
-                orderId: orderSelected.value,
-                trx_id: paymentTrxId.value,
-                id_type_payments: paymentTypeSelected.value
-
+                orderID: orderSelected.value,
+                paymentID: paymentsSelected.value
             }
-            await $axios.post('/payment/create', dataToSave).then(res => {
+            await $axios.post('/payment/assign_order', dataToSave).then(res => {
                 orders.value = res.data.data
                 Swal.fire({
-                    title: "Payment Created",
+                    title: "Payment Assigned Correctly",
                     text: res.data.msg,
                     icon: "success",
                     confirmButtonColor: "#3085d6",
@@ -104,10 +93,9 @@ export default {
                     customClass: {
                         confirmButton: 'custom-text-color-confirm',
                     }
-                }).then((res)=>{
+                }).then((res) => {
                     if (res.isConfirmed) {
                         router.push({ name: 'paymentTotal' })
-
                     }
                 })
             }).catch(err => {
@@ -124,9 +112,9 @@ export default {
             })
         }
 
-        const getPaymentsType = async() => {
-            await $axios.get('/payment/catalog').then(res => {
-                paymentType.value = res.data.data
+        const getPaymentsType = async () => {
+            await $axios.get('/payment/total').then(res => {
+                payments.value = res.data.data
             }).catch(err => {
 
             })
@@ -143,11 +131,10 @@ export default {
             formattedOrders,
             savePayment,
             orderSelected,
-            paymentTrxId,
-            getPaymentsType, 
-            paymentType, 
-            paymentTypeSelected,
-            paymentTypeFormatted
+            getPaymentsType,
+            payments,
+            paymentsFormatted,
+            paymentsSelected
         }
     }
 

@@ -4,13 +4,13 @@
             <h1 class="text-center">MAKE PAYMENT</h1>
             <br>
             <v-row>
-                <v-col cols="9"><v-select label="Select Order (Customer - Account - Router)" :items="ordersFormatted"
+                <!-- <v-col cols="9"><v-select label="Select Order (Customer - Account - Router)" :items="ordersFormatted"
                         item-title="title" item-value="id" v-model="orderSelected"
-                        @update:modelValue="getCreditCardData()" return-object></v-select></v-col>
+                        @update:modelValue="getCreditCardData()" return-object></v-select></v-col> -->
 
-                <v-col cols="3">
+                <v-col cols="12">
                     <v-select :items="typesPaymentsFormatted" item-title="title" item-value="id"
-                        label="Amount to charged" v-model="typesPaymentsSelected">
+                        label="Amount to charged" v-model="typesPaymentsSelected" variant="outlined">
 
                     </v-select>
 
@@ -18,14 +18,14 @@
                 </v-col>
             </v-row>
             <v-row>
-                <v-col> <v-text-field label="Card Holder" v-model="cardHolder"></v-text-field></v-col>
-                <v-col><v-text-field label="Card Number" v-model="cardNum"></v-text-field></v-col>
+                <v-col> <v-text-field label="Card Holder" v-model="cardHolder" variant="outlined"></v-text-field></v-col>
+                <v-col><v-text-field label="Card Number" v-model="cardNum" variant="outlined"></v-text-field></v-col>
             </v-row>
             <v-row>
-                <v-col><v-text-field label="Exp Date" v-model="cardExpDate"></v-text-field></v-col>
-                <v-col><v-text-field label="CVV" v-model="cardCVV"></v-text-field></v-col>
+                <v-col><v-text-field label="Exp Date" v-model="cardExpDate" variant="outlined"></v-text-field></v-col>
+                <v-col><v-text-field label="CVV" v-model="cardCVV" variant="outlined"></v-text-field></v-col>
                 <v-col><v-select label="Brand" :items="cardTypes" item-title="name" item-value="value"
-                        v-model="cardBrandSelected"></v-select></v-col>
+                        v-model="cardBrandSelected" variant="outlined"></v-select></v-col>
 
             </v-row>
             <v-row>
@@ -102,7 +102,8 @@ export default {
                 exp_month: cardExpDate.value.slice(0, 2),
                 exp_year: cardExpDate.value.slice(-4),
                 cvv: cardCVV.value,
-                id_type_payment: typesPaymentsSelected.value
+                id_type_payment: typesPaymentsSelected.value,
+                card_holder: cardHolder.value,
             }
 
             Swal.fire({
