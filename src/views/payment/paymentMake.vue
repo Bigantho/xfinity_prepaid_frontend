@@ -10,7 +10,7 @@
 
                 <v-col cols="12">
                     <v-select :items="typesPaymentsFormatted" item-title="title" item-value="id"
-                        label="Amount to charged" v-model="typesPaymentsSelected" variant="outlined">
+                        label="Amount to charged" v-model="typesPaymentsSelected" variant="outlined" return-object>
 
                     </v-select>
 
@@ -60,7 +60,6 @@ export default {
 
         const orders = ref([])
         const orderSelected = ref("")
-        const amountToCharged = ref("1")
         const cardHolder = ref("")
         const cardNum = ref("")
         const cardExpDate = ref("")
@@ -68,7 +67,7 @@ export default {
         const cardBrandSelected = ref("")
         const cardTypes = ref([{ name: "VISA", value: "VISA" }, { name: "Master Card", value: "MC" }, { name: "American Express", value: "AMEX" }])
         const typesPayments = ref([])
-        const typesPaymentsSelected = ref(3) // Por defecto el id:3 que es el bundle
+        const typesPaymentsSelected = ref("") // Por defecto el id:3 que es el bundle
 
         const getOrders = async () => {
             await $axios.get('/order/total').then(res => {
@@ -96,18 +95,18 @@ export default {
 
             const paymentObj = {
                 orderId: orderSelected.value.id,
-                amount: amountToCharged.value,
+                amount: typesPaymentsSelected.value.amount,
                 brand: cardBrandSelected.value,
                 number: cardNum.value,
                 exp_month: cardExpDate.value.slice(0, 2),
                 exp_year: cardExpDate.value.slice(-4),
                 cvv: cardCVV.value,
-                id_type_payment: typesPaymentsSelected.value,
+                id_type_payment: typesPaymentsSelected.value.id,
                 card_holder: cardHolder.value,
             }
 
             Swal.fire({
-                title: `¿Desea realizar el cobro de $${amountToCharged.value}?`,
+                title: `¿Desea realizar el cobro de $${typesPaymentsSelected.value.amount}?`,
                 // text: `Transaction Id: ${res.data.paymentMade.id}`,
                 icon: "question",
                 showCancelButton: true,
@@ -195,7 +194,6 @@ export default {
             orders,
             ordersFormatted,
             orderSelected,
-            amountToCharged,
             typesPaymentsFormatted,
             cardHolder,
             cardNum,
