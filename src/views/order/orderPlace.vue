@@ -72,7 +72,7 @@
                                 v-bind="props" v-model="formattedRange" variant="outlined"></v-text-field>
                         </template>
                         <v-card min-width="300">
-                            <v-date-picker v-model="refillDate"></v-date-picker>
+                            <v-date-picker v-model="refillDate" :min="today"></v-date-picker>
                         </v-card>
                     </v-menu>
                 </v-col>
@@ -189,7 +189,11 @@ export default {
         const activationAddress2 = ref("")
         const activationCountrySelected = ref("USA")
         const sameAddress = ref(false)
-
+        const today = computed(() => {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            return tomorrow.toISOString().split('T')[0];
+        })
 
         const getRouters = async () => {
             await $axios.get('/router/total').then(res => {
@@ -415,7 +419,8 @@ export default {
             captureElement,
 
             copyAddress,
-            sameAddress
+            sameAddress,
+            today
 
 
         }
