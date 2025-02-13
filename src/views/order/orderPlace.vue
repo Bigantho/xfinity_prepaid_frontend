@@ -29,9 +29,12 @@
                     </v-select>
                 </v-col>
                 <v-col cols="6">
-                    <v-select label="Select Router" :items="routersFormatted" variant="outlined" item-title="title"
+                    <v-autocomplete label="Select Router" :items="routersFormatted" variant="outlined"
+                        v-model="orderRouterSelected" item-title="title" item-value="id" return-object></v-autocomplete>
+
+                    <!-- <v-select label="Select Router" :items="routersFormatted" variant="outlined" item-title="title"
                         item-value="id" v-model="orderRouterSelected" return-object>
-                    </v-select>
+                    </v-select> -->
                 </v-col>
             </v-row>
             <v-row class="text-center">
