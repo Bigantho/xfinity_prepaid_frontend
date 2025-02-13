@@ -25,19 +25,19 @@
             <v-row class="text-center">
                 <v-col cols="6">
                     <v-select label="Select Customer" :items="customersFormatted" item-title="title" item-value="id"
-                        v-model="orderCustomerSeleted" variant="outlined">
+                        v-model="orderCustomerSeleted" variant="outlined" return-object>
                     </v-select>
                 </v-col>
                 <v-col cols="6">
-                    <v-select label="Select Router" :items="routersFormatted" variant="outlined" item-title="title" item-value="id"
-                        v-model="orderRouterSelected" return-object>
+                    <v-select label="Select Router" :items="routersFormatted" variant="outlined" item-title="title"
+                        item-value="id" v-model="orderRouterSelected" return-object>
                     </v-select>
                 </v-col>
             </v-row>
             <v-row class="text-center">
                 <v-col cols="6">
 
-                    <v-text-field v-model="orderXfinityUser"  variant="outlined" label="Xfinity User">
+                    <v-text-field v-model="orderXfinityUser" variant="outlined" label="Xfinity User">
 
                     </v-text-field>
                 </v-col>
@@ -52,7 +52,8 @@
                     <!-- <v-text-field v-model="orderXfinityUser" label="Xfinity User"> -->
                     <!-- </v-text-field> -->
 
-                    <v-select :items="orderShippingCarrier" v-model="orderShippingCarrierSelected" label="Currier" variant="outlined">
+                    <v-select :items="orderShippingCarrier" v-model="orderShippingCarrierSelected" label="Currier"
+                        variant="outlined">
                     </v-select>
                 </v-col>
                 <v-col cols="6">
@@ -72,6 +73,10 @@
                         </v-card>
                     </v-menu>
                 </v-col>
+                <v-col cols="6">
+                    <v-checkbox label="Use same customer address" @change="copyAddress()"
+                        v-model="sameAddress"></v-checkbox>
+                </v-col>
             </v-row>
             <h2 class="xp-title-table">Activation Address</h2>
             <br>
@@ -87,9 +92,9 @@
                 <v-col cols="4">
                     <v-text-field label="City" variant="outlined" v-model="activationCity"></v-text-field>
                 </v-col>
-               
-            
-             
+
+
+
             </v-row>
             <v-row>
                 <v-col cols="4">
@@ -159,7 +164,7 @@ export default {
         const orderRouterSelected = ref("")
         const orderCorrelative = ref("")
         const orderTotal = ref(0)
-        const orderShippingCarrier = ref(['UPS', 'FedEx', 'DHL','USPS'])
+        const orderShippingCarrier = ref(['UPS', 'FedEx', 'DHL', 'USPS'])
         const orderShippingCarrierSelected = ref("")
         const orderTrackingNum = ref("")
 
@@ -180,6 +185,8 @@ export default {
         const activationAddress1 = ref("")
         const activationAddress2 = ref("")
         const activationCountrySelected = ref("USA")
+        const sameAddress = ref(false)
+
 
         const getRouters = async () => {
             await $axios.get('/router/total').then(res => {
@@ -207,7 +214,7 @@ export default {
 
         const saveOrder = async () => {
             const data = {
-                id_customer: orderCustomerSeleted.value,
+                id_customer: orderCustomerSeleted.value.id,
                 id_router: orderRouterSelected.value.id,
                 id_status_order: 1, // Por default 1 que es "Created"
                 xfinity_user: orderXfinityUser.value,
@@ -299,7 +306,7 @@ export default {
         }
 
         const generateImagen = async () => {
-            
+
             if (captureElement.value) {
                 console.log("entroooooo", captureElement.value);
                 const canvas = await html2canvas(captureElement.value);
@@ -324,6 +331,22 @@ export default {
                                 </html>
                                 `);
                 printWindow.document.close();
+            }
+        }
+
+        const copyAddress = () => {
+            if (sameAddress.value) {
+                activationAddress1.value = orderCustomerSeleted.value.address_object.address_street
+                activationAddress2.value = orderCustomerSeleted.value.address_object.address_street_2
+                activationCity.value = orderCustomerSeleted.value.address_object.address_city
+                activationZipcode.value = orderCustomerSeleted.value.address_object.address_zipcode
+                activationState.value = orderCustomerSeleted.value.address_object.address_state
+            } else {
+                activationAddress1.value = ""
+                activationAddress2.value = ""
+                activationCity.value = ""
+                activationZipcode.value = ""
+                activationState.value = ""
             }
         }
 
@@ -386,7 +409,10 @@ export default {
             showBtnPrint,
 
             generateImagen,
-            captureElement
+            captureElement,
+
+            copyAddress,
+            sameAddress
 
 
         }
