@@ -7,6 +7,9 @@
                         @click="$router.push({ name: 'orderTotal' })">
                     </v-btn>
                 </v-col>
+                <v-col cols="2">
+                    {{ orderCorrelative }}
+                </v-col>
                 <v-col cols="1" offset="2" class="text-right">
                     <VueToPrint :content="labelRef" document-title="AwesomeFileName" remove-after-print>
                         <template #trigger>

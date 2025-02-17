@@ -141,7 +141,7 @@ export default {
                 billing_address_house: "",
                 billing_address_state:billingStateSelected.value ,
                 billing_address_city:  billingCity.value,
-                billign_address_zipcode:billingZipcode.value ,
+                billing_address_zipcode:billingZipcode.value ,
 
             }
 
