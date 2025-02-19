@@ -214,7 +214,7 @@ export default {
 
         const getOrders = async () => {
             await $axios.get('/order/total').then(res => {
-                orderTotal.value = res.data.data.length
+                orderTotal.value = res.data.correlativeCount
             }).catch(err => {
 
             })
